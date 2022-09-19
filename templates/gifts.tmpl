@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of birthday gifts</title>
+  </head>
+  <body>
+    <h2>
+        List of gifts for {{ .Person }}
+    </h2>
+    <table>
+      	<tr>
+            <th>Gift</th>
+            <th>Price</th>
+    	</tr>
+			{{ range .Gifts}}
+      		    <tr>
+                    <th>{{ .Name }}</td>
+                	<th>{{ .Price }}</td>
+      		    </tr>
+			{{ end }}
+    </table>
+  </body>
+</html>
