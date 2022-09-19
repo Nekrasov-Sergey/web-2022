@@ -14,13 +14,13 @@
 `\main.exe`
 
 ## Эндпоинты
-[http://127.0.0.1:8080/ping](http://127.0.0.1:8080/ping)
+http://127.0.0.1:8080/ping
 
-[http://127.0.0.1:8080/home](http://127.0.0.1:8080/home)
+http://127.0.0.1:8080/home
 
-[http://127.0.0.1:8080/gifts](http://127.0.0.1:8080/gifts)
+http://127.0.0.1:8080/gifts
 
-[http://127.0.0.1:8080/image/image.jpg](http://127.0.0.1:8080/image/image.jpg)
+http://127.0.0.1:8080/image/image.jpg
 
 
 
