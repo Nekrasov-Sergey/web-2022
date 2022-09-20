@@ -11,7 +11,7 @@ type Gift struct {
 	Price int
 }
 
-type BirthdayPresents struct {
+type BirthdayGifts struct {
 	Person string
 	Gifts  []Gift
 }
@@ -19,7 +19,7 @@ type BirthdayPresents struct {
 func StartServer() {
 	log.Println("Server start up")
 
-	list := BirthdayPresents{
+	list := BirthdayGifts{
 		Person: "Sergey Nekrasov",
 		Gifts: []Gift{
 			{"Laptop", 45000},
