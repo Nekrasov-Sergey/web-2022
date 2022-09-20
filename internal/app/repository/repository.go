@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"main/internal/app/ds"
 	"main/internal/app/dsn"
+	"math/rand"
 )
 
 type Repository struct {
@@ -26,12 +27,24 @@ func New(ctx context.Context) (*Repository, error) {
 func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
 	product := &ds.Product{}
 
-	err := r.db.First(product, "id = ?", "1").Error // find product with code D42
+	err := r.db.First(product, id).Error
 	if err != nil {
 		return nil, err
 	}
 
 	return product, nil
+}
+
+func (r *Repository) NewRandRecord() error {
+	newProduct := ds.Product{
+		Code:  uint(rand.Intn(900000) + 100000), // код от 100000 до 999999
+		Price: uint(rand.Intn(9000) + 1000),     // цена от 1000 до 9999
+	}
+	err := r.db.Create(&newProduct).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *Repository) CreateProduct(product ds.Product) error {

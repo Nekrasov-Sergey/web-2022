@@ -10,9 +10,7 @@ import (
 
 func main() {
 	log.Println("app start")
-
 	ctx := context.Background()
-
 	_, err := config.NewConfig(ctx) //Config пока не используется
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error("can't init config")

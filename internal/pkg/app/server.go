@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
@@ -18,7 +18,7 @@ type BirthdayGifts struct {
 }
 
 func (a *Application) StartServer() {
-	log.Println("Server start up")
+	log.Println("server start up")
 
 	list := BirthdayGifts{
 		Person: "Sergey Nekrasov",
@@ -33,19 +33,18 @@ func (a *Application) StartServer() {
 
 	r.GET("/ping", func(c *gin.Context) {
 		id := c.Query("id") // получаем из запроса query string
-
 		if id != "" {
-			log.Printf("id recived %s\n", id)
-			intID, err := strconv.Atoi(id) // пытаемся привести это к чиселке
-			if err != nil {                // если не получилось
-				log.Printf("cant convert id %v", err)
+			log.Printf("id received %s\n", id)
+			intID, err := strconv.Atoi(id)
+			if err != nil {
+				log.Printf("can't convert id %v", err)
 				c.Error(err)
 				return
 			}
 
 			product, err := a.repo.GetProductByID(uint(intID))
-			if err != nil { // если не получилось
-				log.Printf("cant get product by id %v", err)
+			if err != nil {
+				log.Printf("can't get product by id %v", err)
 				c.Error(err)
 				return
 			}
@@ -55,6 +54,31 @@ func (a *Application) StartServer() {
 			})
 			return
 		}
+
+		create := c.Query("create")
+		if create != "" {
+			log.Printf("create received %s\n", create)
+			createBool, err := strconv.ParseBool(create) // пытаемся привести это к чиселке
+			if err != nil {                              // если не получилось
+				log.Printf("can't convert create %v", err)
+				c.Error(err)
+				return
+			}
+
+			if createBool {
+				a.repo.NewRandRecord()
+				c.JSON(http.StatusOK, gin.H{
+					"status": "ok",
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"status": "create not true",
+			})
+
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
@@ -79,5 +103,5 @@ func (a *Application) StartServer() {
 
 	r.Run()
 
-	log.Println("Server down")
+	log.Println("server down")
 }
