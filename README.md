@@ -25,7 +25,7 @@
 
 - http://127.0.0.1:8080/image/image.jpg
 
-- http://127.0.0.1:8080/ping?id=55
+- http://127.0.0.1:8080/ping?id=1
 
 - http://127.0.0.1:8080/ping?create=true
 

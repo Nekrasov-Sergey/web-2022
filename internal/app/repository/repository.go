@@ -24,29 +24,25 @@ func New(ctx context.Context) (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
-	product := &ds.Product{}
+func (r *Repository) GetPromoByID(id uint) (*ds.Promos, error) {
+	promo := &ds.Promos{}
 
-	err := r.db.First(product, id).Error
+	err := r.db.First(promo, id).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return product, nil
+	return promo, nil
 }
 
-func (r *Repository) NewRandRecord() error {
-	newProduct := ds.Product{
+func (r *Repository) NewRandRecords() error {
+	newPromo := ds.Promos{
 		Code:  uint(rand.Intn(900000) + 100000), // код от 100000 до 999999
-		Price: uint(rand.Intn(9000) + 1000),     // цена от 1000 до 9999
+		Price: uint(rand.Intn(990) + 10),        // цена от 10 до 999
 	}
-	err := r.db.Create(&newProduct).Error
+	err := r.db.Create(&newPromo).Error
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func (r *Repository) CreateProduct(product ds.Product) error {
-	return r.db.Create(product).Error
 }

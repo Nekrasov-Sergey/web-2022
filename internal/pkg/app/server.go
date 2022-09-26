@@ -35,15 +35,17 @@ func (a *Application) StartServer() {
 				return
 			}
 
-			product, err := a.repo.GetProductByID(uint(intID))
+			promo, err := a.repo.GetPromoByID(uint(intID))
 			if err != nil {
-				log.Printf("can't get product by id %v", err)
+				log.Printf("can't get promo by id %v", err)
 				c.Error(err)
 				return
 			}
 
 			c.JSON(http.StatusOK, gin.H{
-				"product_price": product.Price,
+				"Price": promo.Price,
+				"Promo": promo.Promo,
+				"Store": promo.Store,
 			})
 			return
 		}
@@ -59,7 +61,7 @@ func (a *Application) StartServer() {
 			}
 
 			if createBool {
-				a.repo.NewRandRecord()
+				a.repo.NewRandRecords()
 				c.JSON(http.StatusOK, gin.H{
 					"status": "ok",
 				})

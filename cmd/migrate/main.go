@@ -15,8 +15,7 @@ func main() {
 		panic("failed to connect database")
 	}
 
-	// Migrate the schema
-	err = db.AutoMigrate(&ds.Product{})
+	err = db.AutoMigrate(&ds.Promos{})
 	if err != nil {
 		panic("can't migrate db")
 	}
