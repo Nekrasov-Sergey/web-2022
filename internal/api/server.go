@@ -6,26 +6,18 @@ import (
 	"net/http"
 )
 
-type Gift struct {
-	Name  string
-	Price int
-}
-
-type BirthdayGifts struct {
-	Person string
-	Gifts  []Gift
+type PromoCodes []struct {
+	Store     string
+	PromoCode string
+	Discount  string
 }
 
 func StartServer() {
 	log.Println("Server start up")
-
-	list := BirthdayGifts{
-		Person: "Sergey Nekrasov",
-		Gifts: []Gift{
-			{"Laptop", 45000},
-			{"Bicycle", 20000},
-			{"Sneakers", 6000},
-		},
+	promo := PromoCodes{
+		{"OZON", "FRESH500", "500р"},
+		{"Летуаль", "STYLE", "1000р"},
+		{"ДОДО", "4093", "20%"},
 	}
 
 	r := gin.Default()
@@ -44,10 +36,9 @@ func StartServer() {
 		})
 	})
 
-	r.GET("/gifts", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "gifts.tmpl", gin.H{
-			"Person": list.Person,
-			"Gifts":  list.Gifts,
+	r.GET("/promo", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "promo.tmpl", gin.H{
+			"Promo": promo,
 		})
 	})
 
