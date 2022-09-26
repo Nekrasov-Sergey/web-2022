@@ -21,7 +21,7 @@
 
 - http://127.0.0.1:8080/home
 
-- http://127.0.0.1:8080/gifts
+- http://127.0.0.1:8080/promo
 
 - http://127.0.0.1:8080/image/image.jpg
 
