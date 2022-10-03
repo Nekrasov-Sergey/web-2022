@@ -7,6 +7,8 @@ import (
 	"main/internal/app/ds"
 	"main/internal/app/dsn"
 	"math/rand"
+	"strconv"
+	"time"
 )
 
 type Repository struct {
@@ -36,9 +38,17 @@ func (r *Repository) GetPromoByID(id uint) (*ds.Promos, error) {
 }
 
 func (r *Repository) NewRandRecords() error {
+	rand.Seed(time.Now().UnixNano())
+	code := rand.Intn(900000) + 100000
+	price := rand.Intn(990) + 10
+	storeList := []string{"Пятёрочка", "Магнит", "Вит", "ДОДО", "Яндекс Плюс", "Lamoda"}
+	storeRandom := rand.Intn(len(storeList))
+	store := storeList[storeRandom]
 	newPromo := ds.Promos{
-		Code:  uint(rand.Intn(900000) + 100000), // код от 100000 до 999999
-		Price: uint(rand.Intn(990) + 10),        // цена от 10 до 999
+		Code:  uint(code),                  // код от 100000 до 999999
+		Price: strconv.Itoa(price) + "р",   // цена от 10 до 999
+		Promo: strconv.Itoa(price*2) + "р", //промо даёт в 2 раза больше цены промо
+		Store: store,
 	}
 	err := r.db.Create(&newPromo).Error
 	if err != nil {

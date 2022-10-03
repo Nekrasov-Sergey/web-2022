@@ -5,5 +5,5 @@ type Promos struct {
 	Code  uint
 	Store string
 	Promo string
-	Price uint
+	Price string
 }
