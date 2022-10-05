@@ -8,6 +8,20 @@ import (
 	"os"
 )
 
+// @title BITOP
+// @version 1.0
+// @description Bmstu IT Open Platform
+
+// @contact.name API Support
+// @contact.url https://vk.com/bmstu_schedule
+// @contact.email bitop@spatecon.ru
+
+// @license.name AS IS (NO WARRANTY)
+
+// @host 127.0.0.1
+// @schemes https http
+// @BasePath /
+
 func main() {
 	log.Println("app start")
 	ctx := context.Background()
