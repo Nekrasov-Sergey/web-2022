@@ -8,23 +8,25 @@ import (
 	"os"
 )
 
-// @title BITOP
+// @title Freebie-shop
 // @version 1.0
-// @description Bmstu IT Open Platform
+// @description Store with promo codes for various stores
 
-// @contact.name API Support
-// @contact.url https://vk.com/bmstu_schedule
-// @contact.email bitop@spatecon.ru
+// @contact.name Sergey Nekrasov
+// @contact.url https://vk.com/serega_nekrasov
+// @contact.email 79508031750@yandex.ru
 
 // @license.name AS IS (NO WARRANTY)
 
-// @host 127.0.0.1
+// @host 127.0.0.1:8080
 // @schemes https http
 // @BasePath /
 
 func main() {
 	log.Println("app start")
+
 	ctx := context.Background()
+
 	_, err := config.NewConfig(ctx) //Config пока не используется
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error("can't init config")
@@ -42,4 +44,6 @@ func main() {
 		log.WithContext(ctx).WithError(err).Error("can`t run app")
 		os.Exit(2)
 	}
+
+	log.Println("app terminated")
 }
