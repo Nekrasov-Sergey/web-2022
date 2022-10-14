@@ -71,8 +71,43 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoCreated"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            }
+        },
+        "/promos/create/random": {
+            "post": {
+                "description": "Adding a new random promo to database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Add"
+                ],
+                "summary": "Add a new random promo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Количество",
+                        "name": "Quantity",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoCreated"
                         }
@@ -174,7 +209,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "127.0.0.1:8080",
 	BasePath:         "/",
-	Schemes:          []string{"https", "http"},
+	Schemes:          []string{"http", "https"},
 	Title:            "Freebie-shop",
 	Description:      "Store with promo codes for various stores",
 	InfoInstanceName: "swagger",

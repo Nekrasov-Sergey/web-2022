@@ -58,7 +58,7 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 // @Param Price query string true "Цена"
 // @Param Quantity query uint64 true "Количество"
 // @Param Promo query string true "Промокоды(запись в виде массива)"
-// @Success      201  {object}  promos.PromoCreated
+// @Success      200  {object}  promos.PromoCreated
 // @Failure 500 {object} promos.PromoError
 // @Router       /promos/create [Post]
 func (a *Application) CreatePromo(gCtx *gin.Context) {
@@ -86,8 +86,18 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 	gCtx.JSON(http.StatusOK, promo)
 }
 
+// CreateRandomPromo godoc
+// @Summary      Add a new random promo
+// @Description  Adding a new random promo to database
+// @Tags         Add
+// @Produce      json
+// @Param Quantity query int64 true "Количество"
+// @Success      200  {object}  promos.PromoCreated
+// @Failure 500 {object} promos.PromoError
+// @Router       /promos/create/random [Post]
 func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
-	for i := 0; i < 5; i++ {
+	quantity, _ := strconv.ParseInt(gCtx.Query("Quantity"), 10, 64)
+	for i := 0; i < int(quantity); i++ {
 		promo, _ := a.repo.NewRandRecords()
 		gCtx.JSON(http.StatusOK, promo)
 	}

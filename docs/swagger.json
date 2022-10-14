@@ -1,7 +1,7 @@
 {
     "schemes": [
-        "https",
-        "http"
+        "http",
+        "https"
     ],
     "swagger": "2.0",
     "info": {
@@ -68,8 +68,43 @@
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoCreated"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            }
+        },
+        "/promos/create/random": {
+            "post": {
+                "description": "Adding a new random promo to database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Add"
+                ],
+                "summary": "Add a new random promo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Количество",
+                        "name": "Quantity",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoCreated"
                         }
