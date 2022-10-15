@@ -26,7 +26,7 @@ func (a *Application) StartServer() {
 
 	r.DELETE("/promos/delete", a.DeletePromo)
 
-	r.Run()
+	_ = r.Run()
 
 	log.Println("server down")
 }
@@ -37,6 +37,8 @@ func (a *Application) StartServer() {
 // @Tags         	Info
 // @Produce      	json
 // @Success      	200 {object} model.PromosDocs
+// @Failure 		400 {object} promos.PromoError
+// @Failure 		404 {object} promos.PromoError
 // @Failure 		500 {object} promos.PromoError
 // @Router       	/promos/get [get]
 func (a *Application) GetPromos(gCtx *gin.Context) {
@@ -65,6 +67,8 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 // @Param 			Quantity query uint64 true "Количество"
 // @Param 			Promo query []string true "Промокоды(запись в виде массива)"
 // @Success 		201 {object} promos.PromoCreated
+// @Failure 		400 {object} promos.PromoError
+// @Failure 		404 {object} promos.PromoError
 // @Failure 		500 {object} promos.PromoError
 // @Router  		/promos/create [Post]
 func (a *Application) CreatePromo(gCtx *gin.Context) {
@@ -102,6 +106,8 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 // @Produce      		json
 // @Param				Quantity query int64 true "Количество"
 // @Success     		201 {object} promos.PromoCreated
+// @Failure 			400 {object} promos.PromoError
+// @Failure 			404 {object} promos.PromoError
 // @Failure 			500 {object} promos.PromoError
 // @Router       		/promos/create/random [Post]
 func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
@@ -134,6 +140,8 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 // @Param 			UUID query string true "UUID промо"
 // @Param 			Price query string true "Новая цена"
 // @Success      	200 {object} promos.PromoChanged
+// @Failure 		400 {object} promos.PromoError
+// @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
 // @Router       	/promos/change/price [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
@@ -164,11 +172,13 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Produce      	json
 // @Param 			UUID query string true "UUID промо"
 // @Success      	200 {object} promos.PromoDeleted
+// @Failure 		400 {object} promos.PromoError
+// @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
 // @Router       	/promos/delete [delete]
 func (a *Application) DeletePromo(gCtx *gin.Context) {
-	uuid := gCtx.Query("UUID")
-	err := a.repo.DeletePromo(uuid)
+	UUID := gCtx.Query("UUID")
+	err := a.repo.DeletePromo(UUID)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
