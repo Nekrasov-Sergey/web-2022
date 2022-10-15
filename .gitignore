@@ -1,3 +1,6 @@
 .idea
 *.exe
 bin/
+.env
+config/config.toml
+gen

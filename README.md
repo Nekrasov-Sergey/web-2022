@@ -1,27 +1,55 @@
 # web-2022
 
 ## Описание
-Лабораторные работы по курсу "Разработка интернет-приложений" 2022 года
+Лабораторная работа №3 по курсу "Разработка интернет-приложений" 2022 года
 
-## Запуск сервиса через терминал
+## Запуск миграций
+Установка goose:
+- `go install github.com/pressly/goose/v3/cmd/goose@latest`
 
-### Вариант №1
-`go run .\cmd\freebie-shop\main.go`
+Создание миграций в папке migrations:
+- `goose create db_freebie_shop sql`
 
-### Вариант №2
-`go build .\cmd\freebie-shop\main.go`
+Запуск миграций:
+- `make migrate`
 
-`\main.exe`
+## Добавить недостающие модули
+- `go mod tidy`
 
-## Эндпоинты
-http://127.0.0.1:8080/ping
+## Создание .env файла
+- `make local`
 
-http://127.0.0.1:8080/home
+## Запуск сервиса
+- `make run`
 
-http://127.0.0.1:8080/gifts
+## Создание бинарника
+- `make build`
 
-http://127.0.0.1:8080/image/image.jpg
+## Генерация swagger
+- `make swagger`
 
+## Запуск Docker
+- `make docker`
+
+## Запросы
+### GET
+Получить список всех промокодов:
+- http://127.0.0.1:8080/promos/get
+
+### POST
+Добавить промокод:
+- http://127.0.0.1:8080/promos/create?Store=&Discount=&Price=&Quantity=&Promo=
+
+Добавить рандомные промокоды:
+- http://127.0.0.1:8080/promos/create/random?Quantity=
+
+### PUT
+Изменить цену промокода:
+- http://127.0.0.1:8080/promos/change/price?UUID=&Price=
+
+### DELETE
+Удалить промокод:
+- http://127.0.0.1:8080/promos/delete?UUID=
 
 
 

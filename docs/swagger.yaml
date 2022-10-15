@@ -1,0 +1,237 @@
+basePath: /
+definitions:
+  model.PromosDocs:
+    properties:
+      discount:
+        type: string
+      price:
+        type: string
+      promo:
+        items:
+          type: string
+        type: array
+      quantity:
+        type: integer
+      store:
+        type: string
+      uuid:
+        type: string
+    type: object
+  promos.PromoChanged:
+    properties:
+      changed:
+        type: boolean
+    type: object
+  promos.PromoCreated:
+    properties:
+      created:
+        description: success
+        type: boolean
+    type: object
+  promos.PromoDeleted:
+    properties:
+      deleted:
+        type: boolean
+    type: object
+  promos.PromoError:
+    properties:
+      description:
+        description: description
+        type: string
+      error:
+        description: error
+        type: string
+      type:
+        description: type
+        type: string
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact:
+    email: 79508031750@yandex.ru
+    name: Sergey Nekrasov
+    url: https://vk.com/serega_nekrasov
+  description: Store with promo codes for various stores
+  title: Freebie-shop
+  version: "1.0"
+paths:
+  /promos/change/price:
+    put:
+      description: Change the promo price using its uuid
+      parameters:
+      - description: UUID промо
+        in: query
+        name: UUID
+        required: true
+        type: string
+      - description: Новая цена
+        in: query
+        name: Price
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoChanged'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Change promo price
+      tags:
+      - Change
+  /promos/create:
+    post:
+      description: Adding a new promo to database
+      parameters:
+      - description: Магазин
+        in: query
+        name: Store
+        required: true
+        type: string
+      - description: Скидка
+        in: query
+        name: Discount
+        required: true
+        type: string
+      - description: Цена
+        in: query
+        name: Price
+        required: true
+        type: string
+      - description: Количество
+        in: query
+        name: Quantity
+        required: true
+        type: integer
+      - description: Промокоды(запись в виде массива)
+        in: query
+        items:
+          type: string
+        name: Promo
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/promos.PromoCreated'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Add a new promo
+      tags:
+      - Add
+  /promos/create/random:
+    post:
+      description: Adding a new random promo to database
+      parameters:
+      - description: Количество
+        in: query
+        name: Quantity
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/promos.PromoCreated'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Add a new random promo
+      tags:
+      - Add
+  /promos/delete:
+    delete:
+      description: Delete a promo using its uuid
+      parameters:
+      - description: UUID промо
+        in: query
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoDeleted'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Delete a promo
+      tags:
+      - Delete
+  /promos/get:
+    get:
+      description: Get a list of all promos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PromosDocs'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Get all records
+      tags:
+      - Info
+schemes:
+- http
+- https
+swagger: "2.0"
