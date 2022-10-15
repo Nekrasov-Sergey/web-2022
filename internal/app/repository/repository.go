@@ -2,11 +2,10 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"main/internal/app/ds"
 	"main/internal/app/dsn"
+	"main/internal/app/model"
 	"math/rand"
 	"strconv"
 	"time"
@@ -27,19 +26,19 @@ func New(ctx context.Context) (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetPromos() ([]ds.Promos, error) {
-	var promos []ds.Promos
-	result := r.db.Find(&promos)
-	return promos, result.Error
+func (r *Repository) GetPromos() ([]model.Promos, error) {
+	var promos []model.Promos
+	result := r.db.Find(&promos).Error
+	return promos, result
 
 }
 
-func (r *Repository) AddPromo(promo ds.Promos) error {
+func (r *Repository) AddPromo(promo model.Promos) (model.Promos, error) {
 	err := r.db.Create(&promo).Error
 	if err != nil {
-		return err
+		return model.Promos{}, err
 	}
-	return nil
+	return promo, nil
 }
 
 func RandPromo(n int) string {
@@ -51,7 +50,7 @@ func RandPromo(n int) string {
 	return string(b)
 }
 
-func (r *Repository) NewRandRecords() (ds.Promos, error) {
+func (r *Repository) NewRandRecords() (model.Promos, error) {
 	rand.Seed(time.Now().UnixNano())
 
 	price := rand.Intn(990) + 10
@@ -71,18 +70,16 @@ func (r *Repository) NewRandRecords() (ds.Promos, error) {
 		promoList = append(promoList, RandPromo(5))
 	}
 
-	promo, _ := json.Marshal(promoList)
-
-	newPromo := ds.Promos{
+	newPromo := model.Promos{
 		Store:    store,                     // магазин
 		Discount: discount,                  // скидка
 		Price:    strconv.Itoa(price) + "р", // цена от 10 до 999
 		Quantity: uint64(quantity),          // оставшееся кол-во от 0 до 4
-		Promo:    promo,                     // слайс промокодов
+		Promo:    promoList,                 // слайс промокодов
 	}
 	err := r.db.Create(&newPromo).Error
 	if err != nil {
-		return ds.Promos{}, err
+		return model.Promos{}, err
 	}
 	return newPromo, nil
 }

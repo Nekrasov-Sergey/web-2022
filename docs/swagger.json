@@ -60,7 +60,10 @@
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
                         "description": "Промокоды(запись в виде массива)",
                         "name": "Promo",
                         "in": "query",
@@ -68,8 +71,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoCreated"
                         }
@@ -103,8 +106,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoCreated"
                         }
@@ -132,7 +135,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ds.Promos"
+                            "$ref": "#/definitions/model.PromosDocs"
                         }
                     },
                     "500": {
@@ -146,7 +149,7 @@
         }
     },
     "definitions": {
-        "ds.Promos": {
+        "model.PromosDocs": {
             "type": "object",
             "properties": {
                 "discount": {
@@ -158,7 +161,7 @@
                 "promo": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 },
                 "quantity": {

@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  ds.Promos:
+  model.PromosDocs:
     properties:
       discount:
         type: string
@@ -8,7 +8,7 @@ definitions:
         type: string
       promo:
         items:
-          type: integer
+          type: string
         type: array
       quantity:
         type: integer
@@ -73,14 +73,16 @@ paths:
         type: integer
       - description: Промокоды(запись в виде массива)
         in: query
+        items:
+          type: string
         name: Promo
         required: true
-        type: string
+        type: array
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/promos.PromoCreated'
         "500":
@@ -102,8 +104,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/promos.PromoCreated'
         "500":
@@ -122,7 +124,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ds.Promos'
+            $ref: '#/definitions/model.PromosDocs'
         "500":
           description: Internal Server Error
           schema:

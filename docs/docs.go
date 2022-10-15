@@ -63,7 +63,10 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
                         "description": "Промокоды(запись в виде массива)",
                         "name": "Promo",
                         "in": "query",
@@ -71,8 +74,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoCreated"
                         }
@@ -106,8 +109,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoCreated"
                         }
@@ -135,7 +138,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ds.Promos"
+                            "$ref": "#/definitions/model.PromosDocs"
                         }
                     },
                     "500": {
@@ -149,7 +152,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "ds.Promos": {
+        "model.PromosDocs": {
             "type": "object",
             "properties": {
                 "discount": {
@@ -161,7 +164,7 @@ const docTemplate = `{
                 "promo": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 },
                 "quantity": {
