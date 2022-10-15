@@ -17,10 +17,20 @@ definitions:
       uuid:
         type: string
     type: object
+  promos.PromoChanged:
+    properties:
+      changed:
+        type: boolean
+    type: object
   promos.PromoCreated:
     properties:
-      success:
+      created:
         description: success
+        type: boolean
+    type: object
+  promos.PromoDeleted:
+    properties:
+      deleted:
         type: boolean
     type: object
   promos.PromoError:
@@ -42,11 +52,37 @@ info:
     name: Sergey Nekrasov
     url: https://vk.com/serega_nekrasov
   description: Store with promo codes for various stores
-  license:
-    name: AS IS (NO WARRANTY)
   title: Freebie-shop
   version: "1.0"
 paths:
+  /promos/change/price:
+    put:
+      description: Change the promo price using its uuid
+      parameters:
+      - description: UUID промо
+        in: query
+        name: UUID
+        required: true
+        type: string
+      - description: Новая цена
+        in: query
+        name: Price
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoChanged'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Change promo price
+      tags:
+      - Change
   /promos/create:
     post:
       description: Adding a new promo to database
@@ -115,6 +151,29 @@ paths:
       summary: Add a new random promo
       tags:
       - Add
+  /promos/delete:
+    delete:
+      description: Delete a promo using its uuid
+      parameters:
+      - description: UUID промо
+        in: query
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoDeleted'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Delete a promo
+      tags:
+      - Delete
   /promos/get:
     get:
       description: Get a list of all promos

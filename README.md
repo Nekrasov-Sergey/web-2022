@@ -11,14 +11,14 @@
 - `goose create db_freebie_shop sql`
 
 Запуск миграций:
-- `go run .\cmd\migrate\main.go`
+- `make migrate`
 
 ## Создание .env файла
-- `cp .\.dist.env .env`
+- `make local`
 
 ## Запуск сервиса через терминал
 ### Вариант №1
-- `go run .\cmd\freebie-shop\main.go`
+- `make run`
 
 ### Вариант №2
 - `go build .\cmd\freebie-shop\main.go`
@@ -40,6 +40,9 @@
 Добавить рандомные промокоды:
 - http://127.0.0.1:8080/promos/create/random
 
+### PUT
+
+### DELETE
 
 
 

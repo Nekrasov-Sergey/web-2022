@@ -16,8 +16,6 @@ import (
 // @contact.url https://vk.com/serega_nekrasov
 // @contact.email 79508031750@yandex.ru
 
-// @license.name AS IS (NO WARRANTY)
-
 // @host 127.0.0.1:8080
 // @schemes http https
 // @BasePath /

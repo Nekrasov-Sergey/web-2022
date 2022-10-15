@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"main/internal/app/model"
@@ -21,6 +22,10 @@ func (a *Application) StartServer() {
 
 	r.POST("/promos/create/random", a.CreateRandomPromo)
 
+	r.PUT("/promos/change/price", a.ChangePrice)
+
+	r.DELETE("/promos/delete", a.DeletePromo)
+
 	r.Run()
 
 	log.Println("server down")
@@ -31,7 +36,7 @@ func (a *Application) StartServer() {
 // @Description  	Get a list of all promos
 // @Tags         	Info
 // @Produce      	json
-// @Success      	200  {object}  model.PromosDocs
+// @Success      	200 {object} model.PromosDocs
 // @Failure 		500 {object} promos.PromoError
 // @Router       	/promos/get [get]
 func (a *Application) GetPromos(gCtx *gin.Context) {
@@ -49,19 +54,19 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 	gCtx.JSON(http.StatusOK, resp)
 }
 
-// CreatePromo			godoc
-// @Summary     		Add a new promo
-// @Description			Adding a new promo to database
-// @Tags				Add
-// @Produce      		json
-// @Param 				Store query string true "Магазин"
-// @Param 				Discount query string true "Скидка"
-// @Param 				Price query string true "Цена"
-// @Param 				Quantity query uint64 true "Количество"
-// @Param 				Promo query []string true "Промокоды(запись в виде массива)"
-// @Success 			201  {object}  promos.PromoCreated
-// @Failure 			500 {object} promos.PromoError
-// @Router  			/promos/create [Post]
+// CreatePromo		godoc
+// @Summary     	Add a new promo
+// @Description		Adding a new promo to database
+// @Tags			Add
+// @Produce      	json
+// @Param 			Store query string true "Магазин"
+// @Param 			Discount query string true "Скидка"
+// @Param 			Price query string true "Цена"
+// @Param 			Quantity query uint64 true "Количество"
+// @Param 			Promo query []string true "Промокоды(запись в виде массива)"
+// @Success 		201 {object} promos.PromoCreated
+// @Failure 		500 {object} promos.PromoError
+// @Router  		/promos/create [Post]
 func (a *Application) CreatePromo(gCtx *gin.Context) {
 	quantity, _ := strconv.ParseUint(gCtx.Query("Quantity"), 10, 64)
 	promo := model.Promos{
@@ -72,7 +77,7 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 		Promo:    pq.StringArray{gCtx.Query("Promo")},
 	}
 
-	pr, err := a.repo.AddPromo(promo)
+	err := a.repo.AddPromo(promo)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -83,7 +88,11 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 			})
 		return
 	}
-	gCtx.JSON(http.StatusOK, pr)
+	gCtx.JSON(
+		http.StatusOK,
+		&promos.PromoCreated{
+			Success: true,
+		})
 }
 
 // CreateRandomPromo 	godoc
@@ -92,13 +101,13 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 // @Tags        		Add
 // @Produce      		json
 // @Param				Quantity query int64 true "Количество"
-// @Success     		201  {object}  promos.PromoCreated
+// @Success     		201 {object} promos.PromoCreated
 // @Failure 			500 {object} promos.PromoError
 // @Router       		/promos/create/random [Post]
 func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 	quantity, _ := strconv.ParseInt(gCtx.Query("Quantity"), 10, 64)
 	for i := 0; i < int(quantity); i++ {
-		promo, err := a.repo.NewRandRecords()
+		err := a.repo.NewRandRecords()
 		if err != nil {
 			gCtx.JSON(
 				http.StatusInternalServerError,
@@ -109,6 +118,70 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 				})
 			return
 		}
-		gCtx.JSON(http.StatusOK, promo)
 	}
+	gCtx.JSON(
+		http.StatusOK,
+		&promos.PromoCreated{
+			Success: true,
+		})
+}
+
+// ChangePrice		godoc
+// @Summary      	Change promo price
+// @Description  	Change the promo price using its uuid
+// @Tags         	Change
+// @Produce      	json
+// @Param 			UUID query string true "UUID промо"
+// @Param 			Price query string true "Новая цена"
+// @Success      	200  {object}  promos.PromoChanged
+// @Failure 	 	500 {object} promos.PromoError
+// @Router       	/promos/change/price [put]
+func (a *Application) ChangePrice(gCtx *gin.Context) {
+	inputUuid, _ := uuid.Parse(gCtx.Query("UUID"))
+	newPrice := gCtx.Query("Price")
+	err := a.repo.ChangePrice(inputUuid, newPrice)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&promos.PromoError{
+				Description: "update failed",
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
+	}
+	gCtx.JSON(
+		http.StatusOK,
+		&promos.PromoChanged{
+			Success: true,
+		})
+}
+
+// DeletePromo		godoc
+// @Summary     	Delete a promo
+// @Description 	Delete a promo using its uuid
+// @Tags         	Delete
+// @Produce      	json
+// @Param 			UUID query string true "UUID промо"
+// @Success      	200 {object} promos.PromoDeleted
+// @Failure 	 	500 {object} promos.PromoError
+// @Router       	/promos/delete [delete]
+func (a *Application) DeletePromo(gCtx *gin.Context) {
+	uuid := gCtx.Query("UUID")
+	err := a.repo.DeletePromo(uuid)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&promos.PromoError{
+				Description: "delete failed",
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
+	}
+	gCtx.JSON(
+		http.StatusOK,
+		&promos.PromoDeleted{
+			Success: true,
+		})
 }

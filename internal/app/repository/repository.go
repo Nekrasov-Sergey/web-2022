@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"main/internal/app/dsn"
@@ -28,21 +29,17 @@ func New(ctx context.Context) (*Repository, error) {
 
 func (r *Repository) GetPromos() ([]model.Promos, error) {
 	var promos []model.Promos
-	result := r.db.Find(&promos).Error
-	return promos, result
-
+	err := r.db.Find(&promos).Error
+	return promos, err
 }
 
-func (r *Repository) AddPromo(promo model.Promos) (model.Promos, error) {
+func (r *Repository) AddPromo(promo model.Promos) error {
 	err := r.db.Create(&promo).Error
-	if err != nil {
-		return model.Promos{}, err
-	}
-	return promo, nil
+	return err
 }
 
 func RandPromo(n int) string {
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
@@ -50,7 +47,7 @@ func RandPromo(n int) string {
 	return string(b)
 }
 
-func (r *Repository) NewRandRecords() (model.Promos, error) {
+func (r *Repository) NewRandRecords() error {
 	rand.Seed(time.Now().UnixNano())
 
 	price := rand.Intn(990) + 10
@@ -78,8 +75,18 @@ func (r *Repository) NewRandRecords() (model.Promos, error) {
 		Promo:    promoList,                 // слайс промокодов
 	}
 	err := r.db.Create(&newPromo).Error
-	if err != nil {
-		return model.Promos{}, err
-	}
-	return newPromo, nil
+	return err
+}
+
+func (r *Repository) ChangePrice(uuid uuid.UUID, price string) error {
+	var promo model.Promos
+	promo.UUID = uuid
+	err := r.db.Model(&promo).Update("Price", price).Error
+	return err
+}
+
+func (r *Repository) DeletePromo(uuid string) error {
+	var promo model.Promos
+	err := r.db.Delete(&promo, "uuid", uuid).Error
+	return err
 }

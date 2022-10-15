@@ -15,14 +15,53 @@ const docTemplate = `{
             "url": "https://vk.com/serega_nekrasov",
             "email": "79508031750@yandex.ru"
         },
-        "license": {
-            "name": "AS IS (NO WARRANTY)"
-        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/promos/change/price": {
+            "put": {
+                "description": "Change the promo price using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Change"
+                ],
+                "summary": "Change promo price",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID промо",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Новая цена",
+                        "name": "Price",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoChanged"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            }
+        },
         "/promos/create": {
             "post": {
                 "description": "Adding a new promo to database",
@@ -124,6 +163,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/promos/delete": {
+            "delete": {
+                "description": "Delete a promo using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Delete"
+                ],
+                "summary": "Delete a promo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID промо",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoDeleted"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            }
+        },
         "/promos/get": {
             "get": {
                 "description": "Get a list of all promos",
@@ -178,11 +252,27 @@ const docTemplate = `{
                 }
             }
         },
+        "promos.PromoChanged": {
+            "type": "object",
+            "properties": {
+                "changed": {
+                    "type": "boolean"
+                }
+            }
+        },
         "promos.PromoCreated": {
             "type": "object",
             "properties": {
-                "success": {
+                "created": {
                     "description": "success",
+                    "type": "boolean"
+                }
+            }
+        },
+        "promos.PromoDeleted": {
+            "type": "object",
+            "properties": {
+                "deleted": {
                     "type": "boolean"
                 }
             }
