@@ -4,14 +4,19 @@
 Лабораторная работа №3 по курсу "Разработка интернет-приложений" 2022 года
 
 ## Запуск миграций
-В консоли PostgreSQL написать команду:
-- `CREATE EXTENSION "uuid-ossp";`
+Установка goose:
+- `go install github.com/pressly/goose/v3/cmd/goose@latest`
 
-В консоли Goland написать команду:
+Создание миграций в папке migrations:
+- `goose create db_freebie_shop sql`
+
+Запуск миграций:
 - `go run .\cmd\migrate\main.go`
 
-## Запуск сервиса через терминал
+## Создание .env файла
+- `cp .\.dist.env .env`
 
+## Запуск сервиса через терминал
 ### Вариант №1
 - `go run .\cmd\freebie-shop\main.go`
 
