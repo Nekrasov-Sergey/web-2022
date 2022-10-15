@@ -13,20 +13,23 @@
 Запуск миграций:
 - `make migrate`
 
+## Добавить недостающие модули
+- `go mod tidy`
+
 ## Создание .env файла
 - `make local`
 
-## Запуск сервиса через терминал
-### Вариант №1
+## Запуск сервиса
 - `make run`
 
-### Вариант №2
-- `go build .\cmd\freebie-shop\main.go`
+## Создание бинарника
+- `make build`
 
-- `\main.exe`
+## Генерация swagger
+- `make swagger`
 
-## Сгенерировать swagger
-- `swag init -g \cmd\freebie-shop\main.go`
+## Запуск Docker
+- `make docker`
 
 ## Запросы
 ### GET
@@ -35,14 +38,18 @@
 
 ### POST
 Добавить промокод:
-- http://127.0.0.1:8080/promos/create
+- http://127.0.0.1:8080/promos/create?Store=&Discount=&Price=&Quantity=&Promo=
 
 Добавить рандомные промокоды:
-- http://127.0.0.1:8080/promos/create/random
+- http://127.0.0.1:8080/promos/create/random?Quantity=
 
 ### PUT
+Изменить цену промокода:
+- http://127.0.0.1:8080/promos/change/price?UUID=&Price=
 
 ### DELETE
+Удалить промокод:
+- http://127.0.0.1:8080/promos/delete?UUID=
 
 
 

@@ -52,7 +52,7 @@ func (r *Repository) NewRandRecords() error {
 
 	price := rand.Intn(990) + 10
 
-	storeList := []string{"Пятёрочка", "Магнит", "ВиТ", "ДОДО", "Яндекс Плюс", "Lamoda", "OZON", "Wildberries"}
+	storeList := []string{"Пятёрочка", "Магнит", "Лента", "ВиТ", "ДОДО", "Яндекс Плюс", "Lamoda", "OZON", "Wildberries"}
 	storeRandom := rand.Intn(len(storeList))
 	store := storeList[storeRandom]
 

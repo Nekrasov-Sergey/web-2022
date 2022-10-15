@@ -133,7 +133,7 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 // @Produce      	json
 // @Param 			UUID query string true "UUID промо"
 // @Param 			Price query string true "Новая цена"
-// @Success      	200  {object}  promos.PromoChanged
+// @Success      	200 {object} promos.PromoChanged
 // @Failure 	 	500 {object} promos.PromoError
 // @Router       	/promos/change/price [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
