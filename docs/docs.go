@@ -20,37 +20,21 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/promos/change/price": {
-            "put": {
-                "description": "Change the promo price using its uuid",
+        "/promos": {
+            "get": {
+                "description": "Get a list of all promos",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Change"
+                    "Info"
                 ],
-                "summary": "Change promo price",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "UUID промо",
-                        "name": "UUID",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Новая цена",
-                        "name": "Price",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Get all records",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/promos.PromoChanged"
+                            "$ref": "#/definitions/model.PromosDocs"
                         }
                     },
                     "400": {
@@ -74,7 +58,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/promos/create": {
+        "/promos/": {
             "post": {
                 "description": "Adding a new promo to database",
                 "produces": [
@@ -93,14 +77,14 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Скидка",
                         "name": "Discount",
                         "in": "query",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Цена",
                         "name": "Price",
                         "in": "query",
@@ -152,7 +136,144 @@ const docTemplate = `{
                 }
             }
         },
-        "/promos/create/random": {
+        "/promos/:uuid": {
+            "get": {
+                "description": "Get the price using the promo uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get price for a promo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "UUID промо",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoPrice"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a promo using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Delete"
+                ],
+                "summary": "Delete a promo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "UUID промо",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoDeleted"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            }
+        },
+        "/promos/:uuid/:price": {
+            "put": {
+                "description": "Change the promo price using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Change"
+                ],
+                "summary": "Change promo price",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "UUID промо",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Новая цена",
+                        "name": "Price",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoChanged"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            }
+        },
+        "/promos/random": {
             "post": {
                 "description": "Adding a new random promo to database",
                 "produces": [
@@ -198,91 +319,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/promos/delete": {
-            "delete": {
-                "description": "Delete a promo using its uuid",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Delete"
-                ],
-                "summary": "Delete a promo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "UUID промо",
-                        "name": "UUID",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoDeleted"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    }
-                }
-            }
-        },
-        "/promos/get": {
-            "get": {
-                "description": "Get a list of all promos",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Info"
-                ],
-                "summary": "Get all records",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.PromosDocs"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -290,10 +326,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "discount": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "price": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "promo": {
                     "type": "array",
@@ -350,6 +386,14 @@ const docTemplate = `{
                 },
                 "type": {
                     "description": "type",
+                    "type": "string"
+                }
+            }
+        },
+        "promos.PromoPrice": {
+            "type": "object",
+            "properties": {
+                "price": {
                     "type": "string"
                 }
             }

@@ -34,22 +34,25 @@
 ## Запросы
 ### GET
 Получить список всех промокодов:
-- http://127.0.0.1:8080/promos/get
+- http://127.0.0.1:8080/promos
+
+Получить цену промокода:
+- http://127.0.0.1:8080/promos/:uuid
 
 ### POST
 Добавить промокод:
-- http://127.0.0.1:8080/promos/create?Store=&Discount=&Price=&Quantity=&Promo=
+- http://127.0.0.1:8080/promos/
 
 Добавить рандомные промокоды:
-- http://127.0.0.1:8080/promos/create/random?Quantity=
+- http://127.0.0.1:8080/promos/random
 
 ### PUT
 Изменить цену промокода:
-- http://127.0.0.1:8080/promos/change/price?UUID=&Price=
+- http://127.0.0.1:8080/promos/:uuid/:price
 
 ### DELETE
 Удалить промокод:
-- http://127.0.0.1:8080/promos/delete?UUID=
+- http://127.0.0.1:8080/promos/:uuid
 
 
 

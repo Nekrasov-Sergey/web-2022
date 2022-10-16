@@ -3,9 +3,9 @@ definitions:
   model.PromosDocs:
     properties:
       discount:
-        type: string
+        type: integer
       price:
-        type: string
+        type: integer
       promo:
         items:
           type: string
@@ -45,6 +45,11 @@ definitions:
         description: type
         type: string
     type: object
+  promos.PromoPrice:
+    properties:
+      price:
+        type: string
+    type: object
 host: 127.0.0.1:8080
 info:
   contact:
@@ -55,27 +60,16 @@ info:
   title: Freebie-shop
   version: "1.0"
 paths:
-  /promos/change/price:
-    put:
-      description: Change the promo price using its uuid
-      parameters:
-      - description: UUID промо
-        in: query
-        name: UUID
-        required: true
-        type: string
-      - description: Новая цена
-        in: query
-        name: Price
-        required: true
-        type: string
+  /promos:
+    get:
+      description: Get a list of all promos
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/promos.PromoChanged'
+            $ref: '#/definitions/model.PromosDocs'
         "400":
           description: Bad Request
           schema:
@@ -88,10 +82,10 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/promos.PromoError'
-      summary: Change promo price
+      summary: Get all records
       tags:
-      - Change
-  /promos/create:
+      - Info
+  /promos/:
     post:
       description: Adding a new promo to database
       parameters:
@@ -104,12 +98,12 @@ paths:
         in: query
         name: Discount
         required: true
-        type: string
+        type: integer
       - description: Цена
         in: query
         name: Price
         required: true
-        type: string
+        type: integer
       - description: Количество
         in: query
         name: Quantity
@@ -144,7 +138,99 @@ paths:
       summary: Add a new promo
       tags:
       - Add
-  /promos/create/random:
+  /promos/:uuid:
+    delete:
+      description: Delete a promo using its uuid
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: query
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoDeleted'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Delete a promo
+      tags:
+      - Delete
+    get:
+      description: Get the price using the promo uuid
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: query
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoPrice'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Get price for a promo
+      tags:
+      - Info
+  /promos/:uuid/:price:
+    put:
+      description: Change the promo price using its uuid
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: query
+        name: UUID
+        required: true
+        type: string
+      - description: Новая цена
+        in: query
+        name: Price
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promos.PromoChanged'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/promos.PromoError'
+      summary: Change promo price
+      tags:
+      - Change
+  /promos/random:
     post:
       description: Adding a new random promo to database
       parameters:
@@ -175,62 +261,6 @@ paths:
       summary: Add a new random promo
       tags:
       - Add
-  /promos/delete:
-    delete:
-      description: Delete a promo using its uuid
-      parameters:
-      - description: UUID промо
-        in: query
-        name: UUID
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/promos.PromoDeleted'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/promos.PromoError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/promos.PromoError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/promos.PromoError'
-      summary: Delete a promo
-      tags:
-      - Delete
-  /promos/get:
-    get:
-      description: Get a list of all promos
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.PromosDocs'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/promos.PromoError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/promos.PromoError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/promos.PromoError'
-      summary: Get all records
-      tags:
-      - Info
 schemes:
 - http
 - https

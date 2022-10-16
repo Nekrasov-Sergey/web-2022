@@ -3,11 +3,11 @@
 create table promos
 (
     UUID     uuid NOT NULL DEFAULT uuid_generate_v4() primary key,
-    Store    text NOT NULL,
-    Discount text NOT NULL,
-    Price    text NOT NULL,
-    Quantity serial NOT NULL,
-    Promo    text[] NOT NULL
+    Store    text,
+    Discount int,
+    Price    int,
+    Quantity int,
+    Promo    text[]
 );
 
 
