@@ -32,6 +32,15 @@ func (r *Repository) GetPromos() ([]model.Promos, error) {
 	return promos, err
 }
 
+func (r *Repository) GetPromoPrice(uuid string) (uint64, error) {
+	var promo model.Promos
+	err := r.db.First(&promo, "uuid", uuid).Error
+	if err != nil {
+		return 0, err
+	}
+	return promo.Price, nil
+}
+
 func (r *Repository) AddPromo(promo model.Promos) error {
 	err := r.db.Create(&promo).Error
 	return err

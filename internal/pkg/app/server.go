@@ -7,6 +7,7 @@ import (
 	"main/internal/app/model"
 	"main/swagger/promos"
 	"net/http"
+	"strconv"
 )
 
 func (a *Application) StartServer() {
@@ -14,17 +15,17 @@ func (a *Application) StartServer() {
 
 	r := gin.Default()
 
-	r.GET("/promos/get", a.GetPromos)
+	r.GET("/promos", a.GetPromos)
 
-	r.GET("/promos/get", a.GetPromos)
+	r.GET("/promos/:uuid", a.GetPromoPrice)
 
-	r.POST("/promos/create", a.CreatePromo)
+	r.POST("/promos/", a.CreatePromo)
 
-	r.POST("/promos/create/random", a.CreateRandomPromo)
+	r.POST("/promos/random", a.CreateRandomPromo)
 
-	r.PUT("/promos/change/price", a.ChangePrice)
+	r.PUT("/promos/:uuid/:price", a.ChangePrice)
 
-	r.DELETE("/promos/delete", a.DeletePromo)
+	r.DELETE("/promos/:uuid/", a.DeletePromo)
 
 	_ = r.Run()
 
@@ -40,7 +41,7 @@ func (a *Application) StartServer() {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 		500 {object} promos.PromoError
-// @Router       	/promos/get [get]
+// @Router       	/promos [get]
 func (a *Application) GetPromos(gCtx *gin.Context) {
 	resp, err := a.repo.GetPromos()
 	if err != nil {
@@ -54,6 +55,36 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 		return
 	}
 	gCtx.JSON(http.StatusOK, resp)
+}
+
+// GetPromoPrice  	godoc
+// @Summary      	Get price for a promo
+// @Description  	Get the price using the promo uuid
+// @Tags         	Info
+// @Produce      	json
+// @Param 			UUID query string true "UUID промо" format(uuid)
+// @Success      	200 {object} promos.PromoPrice
+// @Failure 	 	500 {object} promos.PromoError
+// @Router       	/promos/:uuid [get]
+func (a *Application) GetPromoPrice(gCtx *gin.Context) {
+	UUID := gCtx.Param("uuid")
+	resp, err := a.repo.GetPromoPrice(UUID)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&promos.PromoError{
+				Description: "can`t get a price",
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
+	}
+	gCtx.JSON(
+		http.StatusOK,
+		&promos.PromoPrice{
+			Price: strconv.FormatUint(resp, 10),
+		})
+
 }
 
 // CreatePromo		godoc
@@ -70,7 +101,7 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 		500 {object} promos.PromoError
-// @Router  		/promos/create [post]
+// @Router  		/promos/ [post]
 func (a *Application) CreatePromo(gCtx *gin.Context) {
 	promo := model.Promos{}
 	if err := gCtx.BindJSON(&promo); err != nil {
@@ -111,7 +142,7 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 // @Failure 			400 {object} promos.PromoError
 // @Failure 			404 {object} promos.PromoError
 // @Failure 			500 {object} promos.PromoError
-// @Router       		/promos/create/random [post]
+// @Router       		/promos/random [post]
 func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 	promo := model.Promos{}
 	if err := gCtx.BindJSON(&promo); err != nil {
@@ -155,10 +186,10 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/change/price [put]
+// @Router       	/promos/:uuid/:price [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
-	inputUuid, _ := uuid.Parse(gCtx.Query("UUID"))
-	newPrice := gCtx.Query("Price")
+	inputUuid, _ := uuid.Parse(gCtx.Param("uuid"))
+	newPrice := gCtx.Param("price")
 	err := a.repo.ChangePrice(inputUuid, newPrice)
 	if err != nil {
 		gCtx.JSON(
@@ -187,9 +218,9 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/delete [delete]
+// @Router       	/promos/:uuid [delete]
 func (a *Application) DeletePromo(gCtx *gin.Context) {
-	UUID := gCtx.Query("UUID")
+	UUID := gCtx.Param("uuid")
 	err := a.repo.DeletePromo(UUID)
 	if err != nil {
 		gCtx.JSON(
