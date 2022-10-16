@@ -8,7 +8,6 @@ import (
 	"main/internal/app/dsn"
 	"main/internal/app/model"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -52,13 +51,11 @@ func (r *Repository) NewRandRecords() error {
 
 	price := rand.Intn(990) + 10
 
+	discount := price * 2
+
 	storeList := []string{"Пятёрочка", "Магнит", "Лента", "ВиТ", "ДОДО", "Яндекс Плюс", "Lamoda", "OZON", "Wildberries"}
 	storeRandom := rand.Intn(len(storeList))
 	store := storeList[storeRandom]
-
-	discountList := []string{"-" + strconv.Itoa(price*2) + "р", "-10%", "-20%", "-30%"}
-	discountRandom := rand.Intn(len(discountList))
-	discount := discountList[discountRandom]
 
 	quantity := rand.Intn(5)
 
@@ -68,11 +65,11 @@ func (r *Repository) NewRandRecords() error {
 	}
 
 	newPromo := model.Promos{
-		Store:    store,                     // магазин
-		Discount: discount,                  // скидка
-		Price:    strconv.Itoa(price) + "р", // цена от 10 до 999
-		Quantity: uint64(quantity),          // оставшееся кол-во от 0 до 4
-		Promo:    promoList,                 // слайс промокодов
+		Store:    store,            // магазин
+		Discount: uint64(discount), // скидка
+		Price:    uint64(price),    // цена от 10 до 999
+		Quantity: uint64(quantity), // оставшееся кол-во от 0 до 4
+		Promo:    promoList,        // слайс промокодов
 	}
 	err := r.db.Create(&newPromo).Error
 	return err
@@ -81,12 +78,20 @@ func (r *Repository) NewRandRecords() error {
 func (r *Repository) ChangePrice(uuid uuid.UUID, price string) error {
 	var promo model.Promos
 	promo.UUID = uuid
-	err := r.db.Model(&promo).Update("Price", price).Error
+	err := r.db.First(&promo, "uuid", uuid).Error
+	if err != nil {
+		return err
+	}
+	err = r.db.Model(&promo).Update("Price", price).Error
 	return err
 }
 
 func (r *Repository) DeletePromo(uuid string) error {
 	var promo model.Promos
-	err := r.db.Delete(&promo, "uuid", uuid).Error
+	err := r.db.First(&promo, "uuid", uuid).Error
+	if err != nil {
+		return err
+	}
+	err = r.db.Delete(&promo, "uuid", uuid).Error
 	return err
 }

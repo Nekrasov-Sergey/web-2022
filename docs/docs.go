@@ -33,13 +33,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "format": "uuid",
                         "description": "UUID промо",
                         "name": "UUID",
                         "in": "query",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Новая цена",
                         "name": "Price",
                         "in": "query",
@@ -93,14 +94,14 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Скидка",
                         "name": "Discount",
                         "in": "query",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Цена",
                         "name": "Price",
                         "in": "query",
@@ -212,6 +213,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "format": "uuid",
                         "description": "UUID промо",
                         "name": "UUID",
                         "in": "query",
@@ -290,10 +292,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "discount": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "price": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "promo": {
                     "type": "array",

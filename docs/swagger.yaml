@@ -3,9 +3,9 @@ definitions:
   model.PromosDocs:
     properties:
       discount:
-        type: string
+        type: integer
       price:
-        type: string
+        type: integer
       promo:
         items:
           type: string
@@ -60,6 +60,7 @@ paths:
       description: Change the promo price using its uuid
       parameters:
       - description: UUID промо
+        format: uuid
         in: query
         name: UUID
         required: true
@@ -68,7 +69,7 @@ paths:
         in: query
         name: Price
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -104,12 +105,12 @@ paths:
         in: query
         name: Discount
         required: true
-        type: string
+        type: integer
       - description: Цена
         in: query
         name: Price
         required: true
-        type: string
+        type: integer
       - description: Количество
         in: query
         name: Quantity
@@ -180,6 +181,7 @@ paths:
       description: Delete a promo using its uuid
       parameters:
       - description: UUID промо
+        format: uuid
         in: query
         name: UUID
         required: true
