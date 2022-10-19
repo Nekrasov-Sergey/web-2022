@@ -32,13 +32,10 @@ func (r *Repository) GetPromos() ([]model.Promos, error) {
 	return promos, err
 }
 
-func (r *Repository) GetPromoPrice(uuid string) (uint64, error) {
+func (r *Repository) GetPromoPrice(uuid uuid.UUID) (uint64, error) {
 	var promo model.Promos
 	err := r.db.First(&promo, "uuid", uuid).Error
-	if err != nil {
-		return 0, err
-	}
-	return promo.Price, nil
+	return promo.Price, err
 }
 
 func (r *Repository) AddPromo(promo model.Promos) error {
@@ -84,23 +81,29 @@ func (r *Repository) NewRandRecords() error {
 	return err
 }
 
-func (r *Repository) ChangePrice(uuid uuid.UUID, price string) error {
+func (r *Repository) ChangePrice(uuid uuid.UUID, price int) (int, error) {
 	var promo model.Promos
 	promo.UUID = uuid
 	err := r.db.First(&promo, "uuid", uuid).Error
 	if err != nil {
-		return err
+		return 404, err
 	}
 	err = r.db.Model(&promo).Update("Price", price).Error
-	return err
+	if err != nil {
+		return 500, err
+	}
+	return 0, nil
 }
 
-func (r *Repository) DeletePromo(uuid string) error {
+func (r *Repository) DeletePromo(uuid string) (int, error) {
 	var promo model.Promos
 	err := r.db.First(&promo, "uuid", uuid).Error
 	if err != nil {
-		return err
+		return 404, err
 	}
 	err = r.db.Delete(&promo, "uuid", uuid).Error
-	return err
+	if err != nil {
+		return 500, err
+	}
+	return 0, nil
 }

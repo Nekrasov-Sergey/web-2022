@@ -22,3 +22,7 @@ type PromosDocs struct {
 	Quantity uint64
 	Promo    []string `gorm:"type:text[]"`
 }
+
+type Amount struct {
+	Amount int
+}
