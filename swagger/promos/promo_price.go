@@ -1,5 +1,5 @@
 package promos
 
 type PromoPrice struct {
-	Price string `json:"price,omitempty"`
+	Price uint64 `json:"price,omitempty"`
 }

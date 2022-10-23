@@ -1,14 +1,12 @@
 package app
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"main/internal/app/model"
 	"main/swagger/promos"
 	"net/http"
-	"strconv"
 )
 
 func (a *Application) StartServer() {
@@ -24,7 +22,7 @@ func (a *Application) StartServer() {
 
 	r.POST("/promos/random", a.CreateRandomPromo)
 
-	r.PUT("/promos/:uuid/:price", a.ChangePrice)
+	r.PUT("/promos/:uuid/", a.ChangePrice)
 
 	r.DELETE("/promos/:uuid/", a.DeletePromo)
 
@@ -48,11 +46,12 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 			http.StatusInternalServerError,
 			&promos.PromoError{
 				Description: "Can't get a list of promo codes",
-				Error:       "Internal Server Error",
-				Type:        "internal",
+				Error:       promos.Err500,
+				Type:        promos.TypeInternalReq,
 			})
 		return
 	}
+
 	gCtx.JSON(http.StatusOK, resp)
 }
 
@@ -63,39 +62,52 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 // @Produce      	json
 // @Param 			UUID query string true "UUID промо" format(uuid)
 // @Success      	200 {object} promos.PromoPrice
+// @Failure 	 	400 {object} promos.PromoError
 // @Failure 	 	404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
 // @Router       	/promos/:uuid [get]
 func (a *Application) GetPromoPrice(gCtx *gin.Context) {
-	var promo model.Promos
-	UUID, _ := uuid.Parse(gCtx.Param("uuid"))
-	if UUID != promo.UUID {
-		gCtx.JSON(
-			http.StatusNotFound,
-			&promos.PromoError{
-				Description: "UUID Not Found",
-				Error:       "Not Found",
-				Type:        "internal",
-			})
-		return
-	}
-	resp, err := a.repo.GetPromoPrice(UUID)
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 			&promos.PromoError{
-				Description: "Get promo price failed",
-				Error:       "Internal Server Error",
-				Type:        "internal",
+				Description: "Invalid UUID format",
+				Error:       promos.Err400,
+				Type:        promos.TypeClientReq,
 			})
 		return
 	}
+
+	var promo model.Promos
+	code, err := a.repo.GetPromoPrice(UUID, &promo)
+	if err != nil {
+		if code == 404 {
+			gCtx.JSON(
+				http.StatusNotFound,
+				&promos.PromoError{
+					Description: "UUID Not Found",
+					Error:       promos.Err404,
+					Type:        promos.TypeClientReq,
+				})
+			return
+		} else {
+			gCtx.JSON(
+				http.StatusInternalServerError,
+				&promos.PromoError{
+					Description: "Get promo price failed",
+					Error:       promos.Err500,
+					Type:        promos.TypeInternalReq,
+				})
+			return
+		}
+	}
+
 	gCtx.JSON(
 		http.StatusOK,
 		&promos.PromoPrice{
-			Price: strconv.FormatUint(resp, 10),
+			Price: promo.Price,
 		})
-
 }
 
 // CreatePromo		godoc
@@ -114,27 +126,30 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 // @Router  		/promos/ [post]
 func (a *Application) CreatePromo(gCtx *gin.Context) {
 	promo := model.Promos{}
-	if err := gCtx.BindJSON(&promo); err != nil {
+	err := gCtx.BindJSON(&promo)
+	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
 			&promos.PromoError{
 				Description: "Invalid parameters",
-				Error:       "Bad Request",
-				Type:        "internal",
+				Error:       promos.Err400,
+				Type:        promos.TypeClientReq,
 			})
 		return
 	}
-	err := a.repo.AddPromo(promo)
+
+	err = a.repo.AddPromo(promo)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
 			&promos.PromoError{
-				Description: "adding failed",
-				Error:       "Internal Server Error",
-				Type:        "internal",
+				Description: "Create failed",
+				Error:       promos.Err500,
+				Type:        promos.TypeInternalReq,
 			})
 		return
 	}
+
 	gCtx.JSON(
 		http.StatusCreated,
 		&promos.PromoCreated{
@@ -154,29 +169,32 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 // @Router       		/promos/random [post]
 func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 	amount := model.Amount{}
-	if err := gCtx.BindJSON(&amount); err != nil {
+	err := gCtx.BindJSON(&amount)
+	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
 			&promos.PromoError{
 				Description: "The quantity is negative or not int",
-				Error:       "Bad Request",
-				Type:        "internal",
+				Error:       promos.Err400,
+				Type:        promos.TypeClientReq,
 			})
 		return
 	}
-	for i := 0; i < amount.Amount; i++ {
-		err := a.repo.NewRandRecords()
+
+	for i := 0; i < int(amount.Amount); i++ {
+		err = a.repo.NewRandRecords()
 		if err != nil {
 			gCtx.JSON(
 				http.StatusInternalServerError,
 				&promos.PromoError{
 					Description: "Create random promo failed",
-					Error:       "Internal Server Error",
-					Type:        "internal",
+					Error:       promos.Err500,
+					Type:        promos.TypeInternalReq,
 				})
 			return
 		}
 	}
+
 	gCtx.JSON(
 		http.StatusCreated,
 		&promos.PromoCreated{
@@ -195,44 +213,56 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/:uuid/:price [put]
+// @Router       	/promos/:uuid/ [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
-	inputUuid, _ := uuid.Parse(gCtx.Param("uuid"))
-	newPrice, _ := strconv.Atoi(gCtx.Param("price"))
-	fmt.Println(newPrice)
-	if newPrice <= 0 {
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	if err != nil {
+		gCtx.JSON(
+			http.StatusBadRequest,
+			&promos.PromoError{
+				Description: "Invalid UUID format",
+				Error:       promos.Err400,
+				Type:        promos.TypeClientReq,
+			})
+		return
+	}
+
+	promo := model.Promos{}
+	err = gCtx.BindJSON(&promo)
+	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
 			&promos.PromoError{
 				Description: "The price is negative or not int",
-				Error:       "Bad Request",
-				Type:        "internal",
+				Error:       promos.Err400,
+				Type:        promos.TypeClientReq,
 			})
 		return
 	}
-	code, err := a.repo.ChangePrice(inputUuid, newPrice)
+
+	code, err := a.repo.ChangePrice(UUID, promo.Price)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
 				&promos.PromoError{
 					Description: "UUID Not Found",
-					Error:       "Not Found",
-					Type:        "internal",
+					Error:       promos.Err404,
+					Type:        promos.TypeClientReq,
 				})
 			return
-		}
-		if code == 500 {
+		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
 				&promos.PromoError{
 					Description: "Change failed",
-					Error:       "Internal Server Error",
-					Type:        "internal",
+					Error:       promos.Err500,
+					Type:        promos.TypeInternalReq,
 				})
 			return
 		}
 	}
+
 	gCtx.JSON(
 		http.StatusOK,
 		&promos.PromoChanged{
@@ -247,11 +277,23 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Produce      	json
 // @Param 			UUID query string true "UUID промо" format(uuid)
 // @Success      	200 {object} promos.PromoDeleted
+// @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
 // @Router       	/promos/:uuid [delete]
 func (a *Application) DeletePromo(gCtx *gin.Context) {
-	UUID := gCtx.Param("uuid")
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	if err != nil {
+		gCtx.JSON(
+			http.StatusBadRequest,
+			&promos.PromoError{
+				Description: "Invalid UUID format",
+				Error:       promos.Err400,
+				Type:        promos.TypeClientReq,
+			})
+		return
+	}
+
 	code, err := a.repo.DeletePromo(UUID)
 	if err != nil {
 		if code == 404 {
@@ -259,22 +301,22 @@ func (a *Application) DeletePromo(gCtx *gin.Context) {
 				http.StatusNotFound,
 				&promos.PromoError{
 					Description: "UUID Not Found",
-					Error:       "Not Found",
-					Type:        "internal",
+					Error:       promos.Err404,
+					Type:        promos.TypeClientReq,
 				})
 			return
-		}
-		if code == 500 {
+		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
 				&promos.PromoError{
 					Description: "Delete failed",
-					Error:       "Internal Server Error",
-					Type:        "internal",
+					Error:       promos.Err500,
+					Type:        promos.TypeInternalReq,
 				})
 			return
 		}
 	}
+
 	gCtx.JSON(
 		http.StatusOK,
 		&promos.PromoDeleted{

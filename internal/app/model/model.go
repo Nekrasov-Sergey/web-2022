@@ -24,5 +24,5 @@ type PromosDocs struct {
 }
 
 type Amount struct {
-	Amount int
+	Amount uint64
 }

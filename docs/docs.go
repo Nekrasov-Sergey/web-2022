@@ -145,6 +145,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/promos.PromoPrice"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -185,6 +191,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/promos.PromoDeleted"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -200,7 +212,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/promos/:uuid/:price": {
+        "/promos/:uuid/": {
             "put": {
                 "description": "Change the promo price using its uuid",
                 "produces": [
@@ -370,7 +382,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "price": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         }

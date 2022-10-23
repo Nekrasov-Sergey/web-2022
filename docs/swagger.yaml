@@ -48,7 +48,7 @@ definitions:
   promos.PromoPrice:
     properties:
       price:
-        type: string
+        type: integer
     type: object
 host: 127.0.0.1:8080
 info:
@@ -143,6 +143,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/promos.PromoDeleted'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
         "404":
           description: Not Found
           schema:
@@ -170,6 +174,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/promos.PromoPrice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/promos.PromoError'
         "404":
           description: Not Found
           schema:
@@ -181,7 +189,7 @@ paths:
       summary: Get price for a promo
       tags:
       - Info
-  /promos/:uuid/:price:
+  /promos/:uuid/:
     put:
       description: Change the promo price using its uuid
       parameters:

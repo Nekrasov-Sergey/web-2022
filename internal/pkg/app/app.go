@@ -14,7 +14,7 @@ func New(ctx context.Context) (*Application, error) {
 	app := &Application{
 		ctx: ctx,
 	}
-	repo, err := repository.New(ctx)
+	repo, err := repository.New()
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"context"
+	"errors"
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ type Repository struct {
 	db *gorm.DB
 }
 
-func New(ctx context.Context) (*Repository, error) {
+func New() (*Repository, error) {
 	db, err := gorm.Open(postgres.Open(dsn.FromEnv()), &gorm.Config{})
 	if err != nil {
 		return nil, err
@@ -27,15 +27,20 @@ func New(ctx context.Context) (*Repository, error) {
 }
 
 func (r *Repository) GetPromos() ([]model.Promos, error) {
-	var promos []model.Promos
-	err := r.db.Find(&promos).Error
-	return promos, err
+	var promo []model.Promos
+	err := r.db.Find(&promo).Error
+	return promo, err
 }
 
-func (r *Repository) GetPromoPrice(uuid uuid.UUID) (uint64, error) {
-	var promo model.Promos
-	err := r.db.First(&promo, "uuid", uuid).Error
-	return promo.Price, err
+func (r *Repository) GetPromoPrice(uuid uuid.UUID, promo *model.Promos) (uint64, error) {
+	err := r.db.First(&promo, uuid).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
+	}
+	return 0, nil
 }
 
 func (r *Repository) AddPromo(promo model.Promos) error {
@@ -81,12 +86,14 @@ func (r *Repository) NewRandRecords() error {
 	return err
 }
 
-func (r *Repository) ChangePrice(uuid uuid.UUID, price int) (int, error) {
+func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) (int, error) {
 	var promo model.Promos
-	promo.UUID = uuid
-	err := r.db.First(&promo, "uuid", uuid).Error
+	err := r.db.First(&promo, uuid).Error
 	if err != nil {
-		return 404, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
 	}
 	err = r.db.Model(&promo).Update("Price", price).Error
 	if err != nil {
@@ -95,13 +102,16 @@ func (r *Repository) ChangePrice(uuid uuid.UUID, price int) (int, error) {
 	return 0, nil
 }
 
-func (r *Repository) DeletePromo(uuid string) (int, error) {
+func (r *Repository) DeletePromo(uuid uuid.UUID) (int, error) {
 	var promo model.Promos
-	err := r.db.First(&promo, "uuid", uuid).Error
+	err := r.db.First(&promo, uuid).Error
 	if err != nil {
-		return 404, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
 	}
-	err = r.db.Delete(&promo, "uuid", uuid).Error
+	err = r.db.Delete(&promo, uuid).Error
 	if err != nil {
 		return 500, err
 	}
