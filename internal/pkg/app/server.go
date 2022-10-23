@@ -18,13 +18,13 @@ func (a *Application) StartServer() {
 
 	r.GET("/promos/:uuid", a.GetPromoPrice)
 
-	r.POST("/promos/", a.CreatePromo)
+	r.POST("/promos", a.CreatePromo)
 
 	r.POST("/promos/random", a.CreateRandomPromo)
 
-	r.PUT("/promos/:uuid/", a.ChangePrice)
+	r.PUT("/promos/:uuid", a.ChangePrice)
 
-	r.DELETE("/promos/:uuid/", a.DeletePromo)
+	r.DELETE("/promos/:uuid", a.DeletePromo)
 
 	_ = r.Run()
 
