@@ -77,7 +77,6 @@ paths:
       summary: Get all records
       tags:
       - Info
-  /promos/:
     post:
       description: Adding a new promo to database
       parameters:
@@ -189,7 +188,6 @@ paths:
       summary: Get price for a promo
       tags:
       - Info
-  /promos/:uuid/:
     put:
       description: Change the promo price using its uuid
       parameters:

@@ -123,7 +123,7 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 // @Success 		201 {object} promos.PromoCreated
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		500 {object} promos.PromoError
-// @Router  		/promos/ [post]
+// @Router  		/promos [post]
 func (a *Application) CreatePromo(gCtx *gin.Context) {
 	promo := model.Promos{}
 	err := gCtx.BindJSON(&promo)
@@ -213,7 +213,7 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/:uuid/ [put]
+// @Router       	/promos/:uuid [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {

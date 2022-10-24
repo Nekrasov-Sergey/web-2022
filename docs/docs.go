@@ -44,9 +44,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/promos/": {
+            },
             "post": {
                 "description": "Adding a new promo to database",
                 "produces": [
@@ -165,54 +163,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "delete": {
-                "description": "Delete a promo using its uuid",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Delete"
-                ],
-                "summary": "Delete a promo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "UUID промо",
-                        "name": "UUID",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoDeleted"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/promos.PromoError"
-                        }
-                    }
-                }
-            }
-        },
-        "/promos/:uuid/": {
             "put": {
                 "description": "Change the promo price using its uuid",
                 "produces": [
@@ -244,6 +194,52 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/promos.PromoChanged"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a promo using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Delete"
+                ],
+                "summary": "Delete a promo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "UUID промо",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/promos.PromoDeleted"
                         }
                     },
                     "400": {
