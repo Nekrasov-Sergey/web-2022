@@ -1,15 +1,19 @@
 import React from 'react';
-import {Promo} from './components/Promo'
-import {Promos} from './repository/Promos'
+import {Routes, Route, BrowserRouter} from 'react-router-dom'
+import {Navbar} from "./components/Navbar";
+import {HomePage} from "./components/HomePage";
+import {Info} from "./components/Info";
 
 
 function App() {
     return (
-        <div className="container mx-auto max-w-2xl pt-5">
-            {Promos.map((promo, key) => {
-                return <Promo promo={promo} key={key}/>
-            })}
-        </div>
+        <BrowserRouter basename="/">
+            <Navbar/>
+            <Routes>
+                <Route path="/" element={<HomePage/>}/>
+                <Route path="/info" element={<Info/>}/>
+            </Routes>
+        </BrowserRouter>
     )
 }
 

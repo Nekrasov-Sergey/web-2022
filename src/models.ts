@@ -1,5 +1,5 @@
 export interface IPromo {
-    id: number
+    UUID: string
     store: string
     discount: number
     price: number
