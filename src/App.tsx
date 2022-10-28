@@ -4,8 +4,7 @@ import {Navbar} from "./components/Navbar";
 import {HomePage} from "./components/HomePage";
 import {Info} from "./components/Info";
 
-
-function App() {
+export default function App() {
     return (
         <BrowserRouter basename="/">
             <Navbar/>
@@ -17,4 +16,3 @@ function App() {
     )
 }
 
-export default App;
