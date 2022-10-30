@@ -17,9 +17,9 @@ export function Promo(props: PromoProps) {
             <p className="text-green-500 place-self-center text-2xl font-bold">
                 Скидка {props.promo.discount} рублей
             </p>
-
             <Link to="/payment"
-                  className="border-2 border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
+                  className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
+                  state={{promo: props.promo.promo[0]}}
             >
                 Купить
             </Link>
@@ -32,7 +32,7 @@ export function Promo(props: PromoProps) {
                 {props.promo.price} ₽/шт
             </p>
 
-            <p className="text-yellow-400 place-self-center text-2xl font-bold">
+            <p className="text-orange-500 place-self-center text-2xl font-bold">
                 Остаток: {props.promo.quantity} шт
             </p>
         </div>

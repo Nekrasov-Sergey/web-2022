@@ -4,5 +4,6 @@ export interface IPromo {
     discount: number
     price: number
     quantity: number
+    promo: string[]
     image: string
 }

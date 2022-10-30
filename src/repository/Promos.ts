@@ -7,22 +7,27 @@ export const Promos: IPromo[] = [
         discount: 400,
         price: 100,
         quantity: 31,
-        image: "/resourses/five.jpg",
+        promo: ["l3SDQ", "NZMTG", "06TMj"],
+        image: "/resourses/Five.jpg",
     },
+
     {
         UUID: "170f7b5d-db77-490d-9095-4d49bb2022fe",
         store: "Вкусно и Точка",
         discount: 200,
         price: 25,
         quantity: 56,
+        promo: ["GLZnb", "hASBa", "6IYka", "eSUHi"],
         image: "/resourses/ViT.jpg",
     },
+
     {
         UUID: "3d43bbdf-e3aa-4dc4-a548-7ea8075622a1",
         store: "Додо Пицца",
         discount: 1000,
         price: 240,
         quantity: 6,
+        promo: ["KZz36"],
         image: "/resourses/DODO.jpg",
     },
     {
@@ -31,6 +36,7 @@ export const Promos: IPromo[] = [
         discount: 2500,
         price: 300,
         quantity: 16,
+        promo: ["QCBUT", "7CAzF", "FlFQp"],
         image: "/resourses/OZON.jpg",
     },
     {
@@ -39,6 +45,7 @@ export const Promos: IPromo[] = [
         discount: 1600,
         price: 280,
         quantity: 12,
+        promo: ["T8CtZ"],
         image: "/resourses/Lamoda.jpg",
     },
     {
@@ -47,6 +54,7 @@ export const Promos: IPromo[] = [
         discount: 500,
         price: 40,
         quantity: 26,
+        promo: ["Jtgd7"],
         image: "/resourses/WB.jpg",
     },
     {
@@ -55,6 +63,7 @@ export const Promos: IPromo[] = [
         discount: 140,
         price: 15,
         quantity: 41,
+        promo: ["BxA1f", "6lyXM", "1fNKH"],
         image: "/resourses/Lenta.jpg",
     },
     {
@@ -63,6 +72,7 @@ export const Promos: IPromo[] = [
         discount: 260,
         price: 60,
         quantity: 33,
+        promo: ["90ykx"],
         image: "/resourses/Magnit.jpg",
     },
     {
@@ -71,6 +81,7 @@ export const Promos: IPromo[] = [
         discount: 300,
         price: 90,
         quantity: 19,
+        promo: ["PEcpM", "YJvQ9"],
         image: "/resourses/YandexPlus.jpg",
     },
 ]
