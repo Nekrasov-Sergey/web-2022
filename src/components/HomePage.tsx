@@ -8,8 +8,8 @@ export function HomePage() {
             <p className="text-center text-5xl font-bold mb-6 text-pink-500	whitespace-pre-wrap">
                 Доступные промокоды на Октябрь 2022
             </p>
-            {Promos.map((promo, key) => {
-                return <Promo promo={promo} key={key}/>
+            {Promos.map((promo) => {
+                return <Promo promo={promo}/>
             })}
         </div>
     )
