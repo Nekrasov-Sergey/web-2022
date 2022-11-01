@@ -1,11 +1,11 @@
-import {Link} from "react-router-dom";
-import {useLocation} from "react-router-dom";
+import {Link} from "react-router-dom"
+import {useLocation} from "react-router-dom"
 
 export function Payment() {
     return (
         <div className="bg-yellow-50">
             <p className="ml-4 text-2xl font-normal text-black">
-                Freebie shop / payment
+                Freebie shop / {useLocation().state.store}
             </p>
 
             <p className=" font-bold text-6xl text-pink-500 text-center">
