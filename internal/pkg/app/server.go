@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"main/internal/app/model"
-	"main/swagger/promos"
+	"main/swagger"
 	"net/http"
 )
 
@@ -44,10 +44,10 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "Can't get a list of promo codes",
-				Error:       promos.Err500,
-				Type:        promos.TypeInternalReq,
+				Error:       swagger.Err500,
+				Type:        swagger.TypeInternalReq,
 			})
 		return
 	}
@@ -71,10 +71,10 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "Invalid UUID format",
-				Error:       promos.Err400,
-				Type:        promos.TypeClientReq,
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
 			})
 		return
 	}
@@ -85,19 +85,19 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "UUID Not Found",
-					Error:       promos.Err404,
-					Type:        promos.TypeClientReq,
+					Error:       swagger.Err404,
+					Type:        swagger.TypeClientReq,
 				})
 			return
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "Get promo price failed",
-					Error:       promos.Err500,
-					Type:        promos.TypeInternalReq,
+					Error:       swagger.Err500,
+					Type:        swagger.TypeInternalReq,
 				})
 			return
 		}
@@ -105,7 +105,7 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&promos.PromoPrice{
+		&swagger.PromoPrice{
 			Price: promo.Price,
 		})
 }
@@ -130,10 +130,10 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "Invalid parameters",
-				Error:       promos.Err400,
-				Type:        promos.TypeClientReq,
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
 			})
 		return
 	}
@@ -142,17 +142,17 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "Create failed",
-				Error:       promos.Err500,
-				Type:        promos.TypeInternalReq,
+				Error:       swagger.Err500,
+				Type:        swagger.TypeInternalReq,
 			})
 		return
 	}
 
 	gCtx.JSON(
 		http.StatusCreated,
-		&promos.PromoCreated{
+		&swagger.PromoCreated{
 			Success: true,
 		})
 }
@@ -173,10 +173,10 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "The quantity is negative or not int",
-				Error:       promos.Err400,
-				Type:        promos.TypeClientReq,
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
 			})
 		return
 	}
@@ -186,10 +186,10 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 		if err != nil {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "Create random promo failed",
-					Error:       promos.Err500,
-					Type:        promos.TypeInternalReq,
+					Error:       swagger.Err500,
+					Type:        swagger.TypeInternalReq,
 				})
 			return
 		}
@@ -197,7 +197,7 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusCreated,
-		&promos.PromoCreated{
+		&swagger.PromoCreated{
 			Success: true,
 		})
 }
@@ -219,10 +219,10 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "Invalid UUID format",
-				Error:       promos.Err400,
-				Type:        promos.TypeClientReq,
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
 			})
 		return
 	}
@@ -232,10 +232,10 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "The price is negative or not int",
-				Error:       promos.Err400,
-				Type:        promos.TypeClientReq,
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
 			})
 		return
 	}
@@ -245,19 +245,19 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "UUID Not Found",
-					Error:       promos.Err404,
-					Type:        promos.TypeClientReq,
+					Error:       swagger.Err404,
+					Type:        swagger.TypeClientReq,
 				})
 			return
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "Change failed",
-					Error:       promos.Err500,
-					Type:        promos.TypeInternalReq,
+					Error:       swagger.Err500,
+					Type:        swagger.TypeInternalReq,
 				})
 			return
 		}
@@ -265,7 +265,7 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&promos.PromoChanged{
+		&swagger.PromoChanged{
 			Success: true,
 		})
 }
@@ -286,10 +286,10 @@ func (a *Application) DeletePromo(gCtx *gin.Context) {
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&promos.PromoError{
+			&swagger.PromoError{
 				Description: "Invalid UUID format",
-				Error:       promos.Err400,
-				Type:        promos.TypeClientReq,
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
 			})
 		return
 	}
@@ -299,19 +299,19 @@ func (a *Application) DeletePromo(gCtx *gin.Context) {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "UUID Not Found",
-					Error:       promos.Err404,
-					Type:        promos.TypeClientReq,
+					Error:       swagger.Err404,
+					Type:        swagger.TypeClientReq,
 				})
 			return
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&promos.PromoError{
+				&swagger.PromoError{
 					Description: "Delete failed",
-					Error:       promos.Err500,
-					Type:        promos.TypeInternalReq,
+					Error:       swagger.Err500,
+					Type:        swagger.TypeInternalReq,
 				})
 			return
 		}
@@ -319,7 +319,7 @@ func (a *Application) DeletePromo(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&promos.PromoDeleted{
+		&swagger.PromoDeleted{
 			Success: true,
 		})
 }
