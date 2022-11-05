@@ -12,6 +12,7 @@ type Promos struct {
 	Price    uint64
 	Quantity uint64
 	Promo    pq.StringArray `gorm:"type:text[]"`
+	Image    string
 }
 
 type PromosDocs struct {
@@ -21,6 +22,7 @@ type PromosDocs struct {
 	Price    uint64
 	Quantity uint64
 	Promo    []string `gorm:"type:text[]"`
+	Image    string
 }
 
 type Amount struct {

@@ -7,7 +7,8 @@ create table promos
     Discount int,
     Price    int,
     Quantity int,
-    Promo    text[]
+    Promo    text[],
+    Image    text
 );
 
 

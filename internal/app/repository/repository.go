@@ -57,6 +57,18 @@ func RandPromo(n int) string {
 	return string(b)
 }
 
+var image = map[string]string{
+	"Пятёрочка":   "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/Five_gioiio.png",
+	"Магнит":      "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665905/Promos/Magnit_mtz50g.png",
+	"Лента":       "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665905/Promos/Lenta_ocur5v.png",
+	"ВиТ":         "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/ViT_f2xubg.png",
+	"ДОДО":        "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665905/Promos/DODO_kkmdol.webp",
+	"Яндекс Плюс": "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/YandexPlus_cch1ec.jpg",
+	"Lamoda":      "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665905/Promos/Lamoda_xor4fl.jpg",
+	"OZON":        "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/OZON_w2no08.png",
+	"Wildberries": "https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/WB_ri56ng.png",
+}
+
 func (r *Repository) NewRandRecords() error {
 	rand.Seed(time.Now().UnixNano())
 
@@ -67,8 +79,7 @@ func (r *Repository) NewRandRecords() error {
 	storeList := []string{"Пятёрочка", "Магнит", "Лента", "ВиТ", "ДОДО", "Яндекс Плюс", "Lamoda", "OZON", "Wildberries"}
 	storeRandom := rand.Intn(len(storeList))
 	store := storeList[storeRandom]
-
-	quantity := rand.Intn(5)
+	quantity := rand.Intn(5) + 1
 
 	var promoList []string
 	for i := 0; i < quantity; i++ {
@@ -81,6 +92,7 @@ func (r *Repository) NewRandRecords() error {
 		Price:    uint64(price),    // цена от 10 до 999
 		Quantity: uint64(quantity), // оставшееся кол-во от 0 до 4
 		Promo:    promoList,        // слайс промокодов
+		Image:    image[store],
 	}
 	err := r.db.Create(&newPromo).Error
 	return err

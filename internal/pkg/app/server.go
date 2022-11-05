@@ -14,6 +14,8 @@ func (a *Application) StartServer() {
 
 	r := gin.Default()
 
+	r.Use(CORSMiddleware())
+
 	r.GET("/promos", a.GetPromos)
 
 	r.GET("/promos/:uuid", a.GetPromoPrice)
@@ -29,6 +31,20 @@ func (a *Application) StartServer() {
 	_ = r.Run()
 
 	log.Println("server down")
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }
 
 // GetPromos 		godoc
