@@ -16,11 +16,12 @@ export function Promo(props: PromoProps) {
 
             <p className="text-green-500 place-self-center text-2xl font-bold">
                 Скидка {props.promo.Discount} рублей
+
             </p>
 
             <Link to={`${props.promo.Store}`}
                   className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
-                  state={{Promo: props.promo.Promo[0], Store: props.promo.Store}}
+                  state={{Store: props.promo.Store, UUID: props.promo.UUID}}
             >
                 Купить
             </Link>

@@ -1,7 +1,21 @@
 import {Link} from "react-router-dom"
 import {useLocation} from "react-router-dom"
+import {useEffect, useState} from "react";
+import React from 'react';
+import {deleteJson} from "../modules";
 
 export function Payment() {
+    const [Promo, setPromo] = useState([])
+
+    const uuid = `promos/promo/${useLocation().state.UUID}`
+
+    useEffect(() => {
+        async function zxc(){
+            setPromo(await deleteJson(uuid))
+        }
+        zxc()
+    }, [uuid])
+
     return (
         <div className="bg-yellow-50">
             <p className="ml-4 text-2xl font-normal text-black">
@@ -18,7 +32,7 @@ export function Payment() {
             <p className="mt-8 font-medium text-4xl text-green-500 text-center">
                 Ваш промокод:
                 <p className="font-bold italic text-4xl text-red-700">
-                    {useLocation().state.Promo}
+                    {Promo}
                 </p>
             </p>
 

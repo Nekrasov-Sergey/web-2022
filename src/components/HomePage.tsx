@@ -1,18 +1,15 @@
 import {Promo} from "./Promo"
 import {getJson} from "../modules";
 import {useEffect, useState} from "react";
-import {IPromo} from "../models";
 
 export function HomePage() {
-    const [Promos, setPromo] = useState<IPromo[]>([])
-
-    const getAllPromo = async () => {
-        const result = await getJson("promos")
-        await setPromo(result)
-    }
+    const [Promos, setPromos] = useState([])
 
     useEffect(() => {
-        getAllPromo()
+        async function getAllPromos() {
+            setPromos(await getJson("promos"))
+        }
+        getAllPromos()
     }, [])
 
     return (

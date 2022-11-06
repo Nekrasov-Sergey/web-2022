@@ -1,7 +1,8 @@
 import {ENDPOINT} from "./App";
-import {IPromo} from "./models";
-
 
 export const getJson = async (url: string) => {
-    return await fetch(`${ENDPOINT}/${url}`).then((r) => r.json() as Promise<IPromo[]>)
+    return await fetch(`${ENDPOINT}/${url}`).then(r => r.json())
+}
+export const deleteJson = async (url: string) => {
+    return await fetch(`${ENDPOINT}/${url}`).then(r => r.json()).then(data => data.promo)
 }
