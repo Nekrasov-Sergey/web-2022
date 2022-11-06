@@ -5,7 +5,10 @@ export function Payment() {
     return (
         <div className="bg-yellow-50">
             <p className="ml-4 text-2xl font-normal text-black">
-                Freebie shop / {useLocation().state.store}
+                <Link to="/" className="mr-2">
+                    Freebie shop
+                </Link>
+                / {useLocation().state.Store}
             </p>
 
             <p className=" font-bold text-6xl text-pink-500 text-center">
@@ -15,7 +18,7 @@ export function Payment() {
             <p className="mt-8 font-medium text-4xl text-green-500 text-center">
                 Ваш промокод:
                 <p className="font-bold italic text-4xl text-red-700">
-                    {useLocation().state.promo}
+                    {useLocation().state.Promo}
                 </p>
             </p>
 
@@ -27,7 +30,8 @@ export function Payment() {
                 </Link>
             </p>
 
-            <img src="/resourses/Payment.jpg" width="23%" className="mx-auto" alt="Payment"/>
+            <img src="https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/Payment_iw36pk.png"
+                 width="23%" className="mx-auto" alt="Payment"/>
         </div>
     )
 }
