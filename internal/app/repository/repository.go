@@ -72,7 +72,7 @@ var image = map[string]string{
 func (r *Repository) NewRandRecords() error {
 	rand.Seed(time.Now().UnixNano())
 
-	price := rand.Intn(990) + 10
+	price := (rand.Intn(99) + 1) * 10
 
 	discount := price * 2
 
@@ -114,7 +114,7 @@ func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) (int, error) {
 	return 0, nil
 }
 
-func (r *Repository) DeletePromo(uuid uuid.UUID) (int, error) {
+func (r *Repository) DeleteStore(uuid uuid.UUID) (int, error) {
 	var promo model.Promos
 	err := r.db.First(&promo, uuid).Error
 	if err != nil {
@@ -128,4 +128,37 @@ func (r *Repository) DeletePromo(uuid uuid.UUID) (int, error) {
 		return 500, err
 	}
 	return 0, nil
+}
+
+func (r *Repository) DeletePromo(uuid uuid.UUID) (int, string, error) {
+	var promo model.Promos
+	err := r.db.First(&promo, uuid).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, "", err
+		}
+		return 500, "", err
+	}
+
+	Promo := promo.Promo[0]
+
+	if promo.Quantity > 0 {
+		err = r.db.Model(&promo).Update("Promo", promo.Promo[1:]).Error
+		if err != nil {
+			return 500, "", err
+		}
+		err = r.db.Model(&promo).Update("Quantity", promo.Quantity-1).Error
+		if err != nil {
+			return 500, "", err
+		}
+	}
+
+	if promo.Quantity == 0 {
+		err = r.db.Delete(&promo, uuid).Error
+		if err != nil {
+			return 500, "", err
+		}
+	}
+
+	return 0, Promo, nil
 }

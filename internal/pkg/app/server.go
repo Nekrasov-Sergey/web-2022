@@ -20,13 +20,15 @@ func (a *Application) StartServer() {
 
 	r.GET("/promos/:uuid", a.GetPromoPrice)
 
+	r.GET("/promos/promo/:uuid", a.GetPromo)
+
 	r.POST("/promos", a.CreatePromo)
 
 	r.POST("/promos/random", a.CreateRandomPromo)
 
 	r.PUT("/promos/:uuid", a.ChangePrice)
 
-	r.DELETE("/promos/:uuid", a.DeletePromo)
+	r.DELETE("/promos/store/:uuid", a.DeleteStore)
 
 	_ = r.Run()
 
@@ -124,6 +126,65 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 		&swagger.PromoPrice{
 			Price: promo.Price,
 		})
+}
+
+// GetPromo			godoc
+// @Summary     	Get a promo
+// @Description 	Get a promo in store using its uuid
+// @Tags         	Delete
+// @Produce      	json
+// @Param 			UUID query string true "UUID промо" format(uuid)
+// @Success      	200 {object} promos.PromoPromo
+// @Failure 		400 {object} promos.PromoError
+// @Failure 		404 {object} promos.PromoError
+// @Failure 	 	500 {object} promos.PromoError
+// @Router       	/promos/promo/:uuid [get]
+func (a *Application) GetPromo(gCtx *gin.Context) {
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	if err != nil {
+		gCtx.JSON(
+			http.StatusBadRequest,
+			&swagger.PromoError{
+				Description: "Invalid UUID format",
+				Error:       swagger.Err400,
+				Type:        swagger.TypeClientReq,
+			})
+		return
+	}
+
+	code, Promo, err := a.repo.DeletePromo(UUID)
+	if err != nil {
+		if code == 404 {
+			gCtx.JSON(
+				http.StatusNotFound,
+				&swagger.PromoError{
+					Description: "UUID Not Found",
+					Error:       swagger.Err404,
+					Type:        swagger.TypeClientReq,
+				})
+			return
+		} else {
+			gCtx.JSON(
+				http.StatusInternalServerError,
+				&swagger.PromoError{
+					Description: "Delete failed",
+					Error:       swagger.Err500,
+					Type:        swagger.TypeInternalReq,
+				})
+			return
+		}
+	}
+
+	gCtx.JSON(
+		http.StatusOK,
+		&swagger.PromoPromo{
+			Promo: Promo,
+		})
+	//gCtx.JSON(
+	//	http.StatusOK,
+	//	&swagger.PromoDeleted{
+	//		Success: true,
+	//	})
 }
 
 // CreatePromo		godoc
@@ -286,9 +347,9 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 		})
 }
 
-// DeletePromo		godoc
-// @Summary     	Delete a promo
-// @Description 	Delete a promo using its uuid
+// DeleteStore		godoc
+// @Summary     	Delete a store
+// @Description 	Delete a store using its uuid
 // @Tags         	Delete
 // @Produce      	json
 // @Param 			UUID query string true "UUID промо" format(uuid)
@@ -296,8 +357,8 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Failure 		400 {object} promos.PromoError
 // @Failure 		404 {object} promos.PromoError
 // @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/:uuid [delete]
-func (a *Application) DeletePromo(gCtx *gin.Context) {
+// @Router       	/promos/store/:uuid [delete]
+func (a *Application) DeleteStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
@@ -310,7 +371,7 @@ func (a *Application) DeletePromo(gCtx *gin.Context) {
 		return
 	}
 
-	code, err := a.repo.DeletePromo(UUID)
+	code, err := a.repo.DeleteStore(UUID)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
