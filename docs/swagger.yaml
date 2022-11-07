@@ -1,0 +1,299 @@
+basePath: /
+definitions:
+  ds.PriceStore:
+    properties:
+      price:
+        example: 300
+        type: integer
+    type: object
+  ds.QuantityStores:
+    properties:
+      quantity:
+        example: 10
+        type: integer
+    type: object
+  ds.StoreDocs:
+    properties:
+      discount:
+        example: 400
+        type: integer
+      image:
+        example: https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/Five_gioiio.png
+        type: string
+      name:
+        example: Пятёрочка
+        type: string
+      price:
+        example: 200
+        type: integer
+      promo:
+        example:
+        - djzML
+        - MdUI7
+        - byP1f
+        items:
+          type: string
+        type: array
+      quantity:
+        example: 3
+        type: integer
+    type: object
+  swagger.StoreChanged:
+    properties:
+      changed:
+        type: boolean
+    type: object
+  swagger.StoreCreated:
+    properties:
+      created:
+        description: success
+        type: boolean
+    type: object
+  swagger.StoreDeleted:
+    properties:
+      deleted:
+        type: boolean
+    type: object
+  swagger.StoreError:
+    properties:
+      description:
+        description: description
+        type: string
+      error:
+        description: error
+        type: string
+      type:
+        description: type
+        type: string
+    type: object
+  swagger.StorePrice:
+    properties:
+      price:
+        example: 100
+        type: integer
+    type: object
+  swagger.StorePromo:
+    properties:
+      promo:
+        example: gR3hr
+        type: string
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact:
+    email: 79508031750@yandex.ru
+    name: Sergey Nekrasov
+    url: https://vk.com/serega_nekrasov
+  description: Store with promo codes for various stores
+  title: Freebie-shop
+  version: "1.0"
+paths:
+  /store:
+    get:
+      description: Get a list of all stores
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.StoreDocs'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Get all stores
+      tags:
+      - Info
+    post:
+      description: Adding a new promo to database
+      parameters:
+      - description: Магазин
+        in: body
+        name: Promo
+        required: true
+        schema:
+          $ref: '#/definitions/ds.StoreDocs'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/swagger.StoreCreated'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Add a new promo
+      tags:
+      - Add
+  /store/{UUID}:
+    delete:
+      description: Delete a store using its uuid
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: path
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.StoreDeleted'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Delete a store
+      tags:
+      - Delete
+    put:
+      description: Change the promo price using its uuid
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: path
+        name: UUID
+        required: true
+        type: string
+      - description: Новая цена
+        in: body
+        name: Price
+        required: true
+        schema:
+          $ref: '#/definitions/ds.PriceStore'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.StoreChanged'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Change promo price
+      tags:
+      - Change
+  /store/price/{UUID}:
+    get:
+      description: Get price of store by UUID
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: path
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.StorePrice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Get price of store
+      tags:
+      - Info
+  /store/promo/{UUID}:
+    get:
+      description: Get a promo in store using its uuid
+      parameters:
+      - description: UUID промо
+        format: uuid
+        in: path
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.StorePromo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Get a promo
+      tags:
+      - Info
+  /store/random:
+    post:
+      description: Adding a new random promo to database
+      parameters:
+      - description: Количество
+        in: body
+        name: Quantity
+        required: true
+        schema:
+          $ref: '#/definitions/ds.QuantityStores'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/swagger.StoreCreated'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StoreError'
+      summary: Add a new random promo
+      tags:
+      - Add
+schemes:
+- http
+- https
+swagger: "2.0"
