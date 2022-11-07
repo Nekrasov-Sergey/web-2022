@@ -1,5 +1,5 @@
 package swagger
 
-type PromoChanged struct {
+type StoreChanged struct {
 	Success bool `json:"changed,omitempty"`
 }

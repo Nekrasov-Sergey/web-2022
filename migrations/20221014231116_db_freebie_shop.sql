@@ -1,9 +1,9 @@
 -- +goose Up
 -- +goose StatementBegin
-create table promos
+create table stores
 (
     UUID     uuid NOT NULL DEFAULT uuid_generate_v4() primary key,
-    Store    text,
+    Name    text,
     Discount int,
     Price    int,
     Quantity int,
@@ -17,5 +17,5 @@ create table promos
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE promos;
+DROP TABLE stores;
 -- +goose StatementEnd

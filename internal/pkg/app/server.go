@@ -4,7 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	"main/internal/app/model"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "main/docs"
+	"main/internal/app/ds"
 	"main/swagger"
 	"net/http"
 )
@@ -16,19 +19,21 @@ func (a *Application) StartServer() {
 
 	r.Use(CORSMiddleware())
 
-	r.GET("/promos", a.GetPromos)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/promos/:uuid", a.GetPromoPrice)
+	r.GET("/store", a.GetStores)
 
-	r.GET("/promos/promo/:uuid", a.GetPromo)
+	r.GET("/store/price/:uuid", a.GetPriceStore)
 
-	r.POST("/promos", a.CreatePromo)
+	r.GET("/store/promo/:uuid", a.GetPromoStore)
 
-	r.POST("/promos/random", a.CreateRandomPromo)
+	r.POST("/store", a.CreateStore)
 
-	r.PUT("/promos/:uuid", a.ChangePrice)
+	r.POST("/store/random", a.CreateRandomStores)
 
-	r.DELETE("/promos/store/:uuid", a.DeleteStore)
+	r.PUT("/store/:uuid", a.ChangePriceStore)
+
+	r.DELETE("/store/:uuid", a.DeleteStore)
 
 	_ = r.Run()
 
@@ -49,20 +54,20 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-// GetPromos 		godoc
-// @Summary      	Get all records
-// @Description  	Get a list of all promos
+// GetStores 		godoc
+// @Summary      	Get all stores
+// @Description  	Get a list of all stores
 // @Tags         	Info
 // @Produce      	json
-// @Success      	200 {object} model.PromosDocs
-// @Failure 		500 {object} promos.PromoError
-// @Router       	/promos [get]
-func (a *Application) GetPromos(gCtx *gin.Context) {
-	resp, err := a.repo.GetPromos()
+// @Success      	200 {object} ds.StoreDocs
+// @Failure 		500 {object} swagger.StoreError
+// @Router       	/store [get]
+func (a *Application) GetStores(gCtx *gin.Context) {
+	resp, err := a.repo.GetStores()
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Can't get a list of promo codes",
 				Error:       swagger.Err500,
 				Type:        swagger.TypeInternalReq,
@@ -73,23 +78,23 @@ func (a *Application) GetPromos(gCtx *gin.Context) {
 	gCtx.JSON(http.StatusOK, resp)
 }
 
-// GetPromoPrice  	godoc
-// @Summary      	Get price for a promo
-// @Description  	Get the price using the promo uuid
+// GetPriceStore  	godoc
+// @Summary      	Get price of store
+// @Description  	Get price of store by UUID
 // @Tags         	Info
 // @Produce      	json
-// @Param 			UUID query string true "UUID промо" format(uuid)
-// @Success      	200 {object} promos.PromoPrice
-// @Failure 	 	400 {object} promos.PromoError
-// @Failure 	 	404 {object} promos.PromoError
-// @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/:uuid [get]
-func (a *Application) GetPromoPrice(gCtx *gin.Context) {
+// @Param 			UUID path string true "UUID промо" format(uuid)
+// @Success      	200 {object} swagger.StorePrice
+// @Failure 	 	400 {object} swagger.StoreError
+// @Failure 	 	404 {object} swagger.StoreError
+// @Failure 	 	500 {object} swagger.StoreError
+// @Router       	/store/price/{UUID} [get]
+func (a *Application) GetPriceStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Invalid UUID format",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -97,13 +102,13 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 		return
 	}
 
-	var promo model.Promos
-	code, err := a.repo.GetPromoPrice(UUID, &promo)
+	var promo ds.Store
+	code, err := a.repo.GetPriceStore(UUID, &promo)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "UUID Not Found",
 					Error:       swagger.Err404,
 					Type:        swagger.TypeClientReq,
@@ -112,7 +117,7 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "Get promo price failed",
 					Error:       swagger.Err500,
 					Type:        swagger.TypeInternalReq,
@@ -123,28 +128,28 @@ func (a *Application) GetPromoPrice(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&swagger.PromoPrice{
+		&swagger.StorePrice{
 			Price: promo.Price,
 		})
 }
 
-// GetPromo			godoc
+// GetPromoStore			godoc
 // @Summary     	Get a promo
 // @Description 	Get a promo in store using its uuid
-// @Tags         	Delete
+// @Tags         	Info
 // @Produce      	json
-// @Param 			UUID query string true "UUID промо" format(uuid)
-// @Success      	200 {object} promos.PromoPromo
-// @Failure 		400 {object} promos.PromoError
-// @Failure 		404 {object} promos.PromoError
-// @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/promo/:uuid [get]
-func (a *Application) GetPromo(gCtx *gin.Context) {
+// @Param 			UUID path string true "UUID промо" format(uuid)
+// @Success      	200 {object} swagger.StorePromo
+// @Failure 		400 {object} swagger.StoreError
+// @Failure 		404 {object} swagger.StoreError
+// @Failure 	 	500 {object} swagger.StoreError
+// @Router       	/store/promo/{UUID} [get]
+func (a *Application) GetPromoStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Invalid UUID format",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -152,12 +157,12 @@ func (a *Application) GetPromo(gCtx *gin.Context) {
 		return
 	}
 
-	code, Promo, err := a.repo.DeletePromo(UUID)
+	code, Promo, err := a.repo.GetPromoStore(UUID)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "UUID Not Found",
 					Error:       swagger.Err404,
 					Type:        swagger.TypeClientReq,
@@ -166,7 +171,7 @@ func (a *Application) GetPromo(gCtx *gin.Context) {
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "Delete failed",
 					Error:       swagger.Err500,
 					Type:        swagger.TypeInternalReq,
@@ -177,37 +182,28 @@ func (a *Application) GetPromo(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&swagger.PromoPromo{
+		&swagger.StorePromo{
 			Promo: Promo,
 		})
-	//gCtx.JSON(
-	//	http.StatusOK,
-	//	&swagger.PromoDeleted{
-	//		Success: true,
-	//	})
 }
 
-// CreatePromo		godoc
+// CreateStore		godoc
 // @Summary     	Add a new promo
 // @Description		Adding a new promo to database
 // @Tags			Add
 // @Produce      	json
-// @Param 			Store query string true "Магазин"
-// @Param 			Discount query uint64 true "Скидка"
-// @Param 			Price query uint64 true "Цена"
-// @Param 			Quantity query uint64 true "Количество"
-// @Param 			Promo query []string true "Промокоды(запись в виде массива)"
-// @Success 		201 {object} promos.PromoCreated
-// @Failure 		400 {object} promos.PromoError
-// @Failure 		500 {object} promos.PromoError
-// @Router  		/promos [post]
-func (a *Application) CreatePromo(gCtx *gin.Context) {
-	promo := model.Promos{}
+// @Param 			Promo body ds.StoreDocs true "Магазин"
+// @Success 		201 {object} swagger.StoreCreated
+// @Failure 		400 {object} swagger.StoreError
+// @Failure 		500 {object} swagger.StoreError
+// @Router  		/store [post]
+func (a *Application) CreateStore(gCtx *gin.Context) {
+	promo := ds.Store{}
 	err := gCtx.BindJSON(&promo)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Invalid parameters",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -215,11 +211,11 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 		return
 	}
 
-	err = a.repo.AddPromo(promo)
+	err = a.repo.CreateStore(promo)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Create failed",
 				Error:       swagger.Err500,
 				Type:        swagger.TypeInternalReq,
@@ -229,28 +225,28 @@ func (a *Application) CreatePromo(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusCreated,
-		&swagger.PromoCreated{
+		&swagger.StoreCreated{
 			Success: true,
 		})
 }
 
-// CreateRandomPromo 	godoc
+// CreateRandomStores 	godoc
 // @Summary      		Add a new random promo
 // @Description  		Adding a new random promo to database
 // @Tags        		Add
 // @Produce      		json
-// @Param				Quantity query uint64 true "Количество"
-// @Success     		201 {object} promos.PromoCreated
-// @Failure 			400 {object} promos.PromoError
-// @Failure 			500 {object} promos.PromoError
-// @Router       		/promos/random [post]
-func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
-	amount := model.Amount{}
-	err := gCtx.BindJSON(&amount)
+// @Param				Quantity body ds.QuantityStores true "Количество"
+// @Success     		201 {object} swagger.StoreCreated
+// @Failure 			400 {object} swagger.StoreError
+// @Failure 			500 {object} swagger.StoreError
+// @Router       		/store/random [post]
+func (a *Application) CreateRandomStores(gCtx *gin.Context) {
+	quantity := ds.QuantityStores{}
+	err := gCtx.BindJSON(&quantity)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "The quantity is negative or not int",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -258,12 +254,12 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 		return
 	}
 
-	for i := 0; i < int(amount.Amount); i++ {
-		err = a.repo.NewRandRecords()
+	for i := 0; i < int(quantity.Quantity); i++ {
+		err = a.repo.CreateRandomStores()
 		if err != nil {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "Create random promo failed",
 					Error:       swagger.Err500,
 					Type:        swagger.TypeInternalReq,
@@ -274,29 +270,29 @@ func (a *Application) CreateRandomPromo(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusCreated,
-		&swagger.PromoCreated{
+		&swagger.StoreCreated{
 			Success: true,
 		})
 }
 
-// ChangePrice		godoc
+// ChangePriceStore		godoc
 // @Summary      	Change promo price
 // @Description  	Change the promo price using its uuid
 // @Tags         	Change
 // @Produce      	json
-// @Param 			UUID query string true "UUID промо" format(uuid)
-// @Param 			Price query uint64 true "Новая цена"
-// @Success      	200 {object} promos.PromoChanged
-// @Failure 		400 {object} promos.PromoError
-// @Failure 		404 {object} promos.PromoError
-// @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/:uuid [put]
-func (a *Application) ChangePrice(gCtx *gin.Context) {
+// @Param 			UUID path string true "UUID промо" format(uuid)
+// @Param 			Price body ds.PriceStore true "Новая цена"
+// @Success      	200 {object} swagger.StoreChanged
+// @Failure 		400 {object} swagger.StoreError
+// @Failure 		404 {object} swagger.StoreError
+// @Failure 	 	500 {object} swagger.StoreError
+// @Router       	/store/{UUID} [put]
+func (a *Application) ChangePriceStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Invalid UUID format",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -304,12 +300,12 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 		return
 	}
 
-	promo := model.Promos{}
+	promo := ds.Store{}
 	err = gCtx.BindJSON(&promo)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "The price is negative or not int",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -317,12 +313,12 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 		return
 	}
 
-	code, err := a.repo.ChangePrice(UUID, promo.Price)
+	code, err := a.repo.ChangePriceStore(UUID, promo.Price)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "UUID Not Found",
 					Error:       swagger.Err404,
 					Type:        swagger.TypeClientReq,
@@ -331,7 +327,7 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "Change failed",
 					Error:       swagger.Err500,
 					Type:        swagger.TypeInternalReq,
@@ -342,7 +338,7 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&swagger.PromoChanged{
+		&swagger.StoreChanged{
 			Success: true,
 		})
 }
@@ -352,18 +348,18 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Description 	Delete a store using its uuid
 // @Tags         	Delete
 // @Produce      	json
-// @Param 			UUID query string true "UUID промо" format(uuid)
-// @Success      	200 {object} promos.PromoDeleted
-// @Failure 		400 {object} promos.PromoError
-// @Failure 		404 {object} promos.PromoError
-// @Failure 	 	500 {object} promos.PromoError
-// @Router       	/promos/store/:uuid [delete]
+// @Param 			UUID path string true "UUID промо" format(uuid)
+// @Success      	200 {object} swagger.StoreDeleted
+// @Failure 		400 {object} swagger.StoreError
+// @Failure 		404 {object} swagger.StoreError
+// @Failure 	 	500 {object} swagger.StoreError
+// @Router       	/store/{UUID} [delete]
 func (a *Application) DeleteStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
-			&swagger.PromoError{
+			&swagger.StoreError{
 				Description: "Invalid UUID format",
 				Error:       swagger.Err400,
 				Type:        swagger.TypeClientReq,
@@ -376,7 +372,7 @@ func (a *Application) DeleteStore(gCtx *gin.Context) {
 		if code == 404 {
 			gCtx.JSON(
 				http.StatusNotFound,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "UUID Not Found",
 					Error:       swagger.Err404,
 					Type:        swagger.TypeClientReq,
@@ -385,7 +381,7 @@ func (a *Application) DeleteStore(gCtx *gin.Context) {
 		} else {
 			gCtx.JSON(
 				http.StatusInternalServerError,
-				&swagger.PromoError{
+				&swagger.StoreError{
 					Description: "Delete failed",
 					Error:       swagger.Err500,
 					Type:        swagger.TypeInternalReq,
@@ -396,7 +392,7 @@ func (a *Application) DeleteStore(gCtx *gin.Context) {
 
 	gCtx.JSON(
 		http.StatusOK,
-		&swagger.PromoDeleted{
+		&swagger.StoreDeleted{
 			Success: true,
 		})
 }

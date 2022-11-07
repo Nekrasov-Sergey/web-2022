@@ -32,6 +32,10 @@
 - `make docker`
 
 ## Запросы
+### Swagger
+Открыть swagger в браузере:
+- http://127.0.0.1:8080/swagger/index.html
+
 ### GET
 Получить список всех промокодов:
 - http://127.0.0.1:8080/promos

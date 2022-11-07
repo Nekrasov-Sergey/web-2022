@@ -12,27 +12,27 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ModelNewsUpdated model news updated
+// ModelNewsUpdated ds news updated
 //
-// swagger:model model.NewsUpdated
-type PromoCreated struct {
+// swagger:ds ds.NewsUpdated
+type StoreCreated struct {
 
 	// success
 	Success bool `json:"created,omitempty"`
 }
 
-// Validate validates this model news updated
-func (m *PromoCreated) Validate(formats strfmt.Registry) error {
+// Validate validates this ds news updated
+func (m *StoreCreated) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this model news updated based on context it is used
-func (m *PromoCreated) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this ds news updated based on context it is used
+func (m *StoreCreated) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *PromoCreated) MarshalBinary() ([]byte, error) {
+func (m *StoreCreated) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -40,8 +40,8 @@ func (m *PromoCreated) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PromoCreated) UnmarshalBinary(b []byte) error {
-	var res PromoCreated
+func (m *StoreCreated) UnmarshalBinary(b []byte) error {
+	var res StoreCreated
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
