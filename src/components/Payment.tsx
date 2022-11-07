@@ -7,13 +7,13 @@ import {deleteJson} from "../modules";
 export function Payment() {
     const [Promo, setPromo] = useState([])
 
-    const uuid = `promos/promo/${useLocation().state.UUID}`
+    const uuid = `store/promo/${useLocation().state.UUID}`
 
     useEffect(() => {
-        async function zxc(){
+        async function getPromo(){
             setPromo(await deleteJson(uuid))
         }
-        zxc()
+        getPromo()
     }, [uuid])
 
     return (

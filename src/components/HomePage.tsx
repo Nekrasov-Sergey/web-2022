@@ -1,15 +1,15 @@
-import {Promo} from "./Promo"
+import {Store} from "./Store"
 import {getJson} from "../modules";
 import {useEffect, useState} from "react";
 
 export function HomePage() {
-    const [Promos, setPromos] = useState([])
+    const [Stores, setStore] = useState([])
 
     useEffect(() => {
-        async function getAllPromos() {
-            setPromos(await getJson("promos"))
+        async function getAllStores() {
+            setStore(await getJson("store"))
         }
-        getAllPromos()
+        getAllStores()
     }, [])
 
     return (
@@ -22,8 +22,8 @@ export function HomePage() {
                 Доступные промокоды на Ноябрь 2022
             </p>
 
-            {Promos.map((promo) => {
-                return <Promo promo={promo}/>
+            {Stores.map((store) => {
+                return <Store store={store}/>
             })}
         </div>
     )

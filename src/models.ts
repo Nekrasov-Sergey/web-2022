@@ -1,6 +1,6 @@
-export interface IPromo {
+export interface IStore {
     UUID: string
-    Store: string
+    Name: string
     Discount: number
     Price: number
     Quantity: number
