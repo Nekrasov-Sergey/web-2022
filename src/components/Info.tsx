@@ -2,9 +2,9 @@ import {Link} from "react-router-dom";
 
 export function Info() {
     return (
-        <div className="bg-yellow-50">
+        <div className="bg-yellow-50 min-h-screen">
             <p className="ml-4 text-2xl font-normal text-black">
-                <Link to="/" className="mr-2">
+                <Link to="/store" className="mr-2">
                     Freebie shop
                 </Link>
                 / info
