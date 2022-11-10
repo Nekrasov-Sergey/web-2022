@@ -28,7 +28,7 @@ func New() (*Repository, error) {
 
 func (r *Repository) GetStores() ([]ds.Store, error) {
 	var stores []ds.Store
-	err := r.db.Find(&stores).Error
+	err := r.db.Order("uuid").Find(&stores).Error
 	return stores, err
 }
 
