@@ -1,46 +1,16 @@
 import {ENDPOINT} from "./App";
-import {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import axios from "axios";
 
-export const getJsonStores = async (url: string) => {
-    return await fetch(`${ENDPOINT}/${url}`).then(r => r.json())
+export function getJsonStores (url: string)  {
+    return axios.get(`${ENDPOINT}/${url}`).then(r => r.data)
 }
 
-export const getJsonPromo = async (url: string) => {
-    return await fetch(`${ENDPOINT}/${url}`).then(r => r.json()).then(data => data.promo)
-}
-
-export function AllStores() {
-    const [Stores, setStore] = useState([])
-
-    useEffect(() => {
-        async function getAllStores() {
-            setStore(await getJsonStores("store"))
-        }
-
-        getAllStores()
-    }, [])
-    return (
-        Stores
-    )
+export function getJsonPromo(url: string) {
+    return axios.get(`${ENDPOINT}/${url}`).then(r => r.data.promo)
 }
 
 
-export function Promocode() {
-    const [Promo, setPromo] = useState([])
 
-    const uuid = `store/promo/${useLocation().state.UUID}`
 
-    useEffect(() => {
-        async function getPromo() {
-            setPromo(await getJsonPromo(uuid))
-        }
-        getPromo()
-    }, [uuid])
 
-    return (
-        <p>
-            {Promo}
-        </p>
-    )
-}
+

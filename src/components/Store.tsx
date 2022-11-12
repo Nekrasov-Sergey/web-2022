@@ -12,7 +12,6 @@ export function Store(props: { store: IStore }) {
 
             <p className="text-green-500 place-self-center text-2xl font-bold">
                 Скидка {props.store.Discount} рублей
-
             </p>
 
             <Link to={`/store/${props.store.Name}`}

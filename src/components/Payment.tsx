@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom"
 import {useLocation} from "react-router-dom"
 import React from 'react';
-import {Promocode} from "../modules";
+import {GetPromo} from "./GetPromo";
 
 export function Payment() {
     return (
@@ -20,7 +20,7 @@ export function Payment() {
             <p className="mt-8 font-medium text-4xl text-green-500 text-center">
                 Ваш промокод:
                 <p className="font-bold italic text-4xl text-red-700">
-                    {Promocode()}
+                    {GetPromo()}
                 </p>
             </p>
 
