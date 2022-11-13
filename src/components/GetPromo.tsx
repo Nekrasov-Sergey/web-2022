@@ -6,16 +6,18 @@ const initialState = {
     promo: "",
 };
 
-const reducer = (state: any, action: { type: any; payload: any; }) => {
+const reducer = (state: any, action: { type: any; payload?: any; }) => {
     switch (action.type) {
-        case "FETCH_SUCCESS":
+        case "Success":
             return {
                 promo: action.payload
             }
-        default:
+        case "Failure":
             return {
-                state
+                promo: "ВСЁ!"
             }
+        default:
+            return state
     }
 }
 
@@ -24,8 +26,10 @@ export function GetPromo() {
     const url = `store/promo/${useLocation().state.UUID}`
 
     function Promo() {
-        getJsonPromo(url).then((result) => {
-            dispatch({type: "FETCH_SUCCESS", payload: result})
+        getJsonPromo(url).then(result => {
+            dispatch({type: "Success", payload: result})
+        }).catch(() => {
+            dispatch({type: "Failure"})
         })
     }
 
