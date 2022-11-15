@@ -3,7 +3,7 @@
 create table stores
 (
     UUID     uuid NOT NULL DEFAULT uuid_generate_v4() primary key,
-    Name    text,
+    Name     text,
     Discount int,
     Price    int,
     Quantity int,

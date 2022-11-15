@@ -35,6 +35,17 @@ func (a *Application) StartServer() {
 
 	r.DELETE("/store/:uuid", a.DeleteStore)
 
+	//Запросы для корзины:
+	r.GET("/cart", a.GetCart)
+
+	r.GET("/store/:uuid", a.GetStore)
+
+	r.GET("/cart/:store", a.GetQuantity)
+
+	r.GET("/cart/increase/:store", a.IncreaseQuantity)
+
+	r.GET("/cart/decrease/:store", a.DecreaseQuantity)
+
 	_ = r.Run()
 
 	log.Println("server down")

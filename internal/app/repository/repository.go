@@ -32,8 +32,8 @@ func (r *Repository) GetStores() ([]ds.Store, error) {
 	return stores, err
 }
 
-func (r *Repository) GetPriceStore(uuid uuid.UUID, promo *ds.Store) (uint64, error) {
-	err := r.db.First(&promo, uuid).Error
+func (r *Repository) GetPriceStore(uuid uuid.UUID, store *ds.Store) (uint64, error) {
+	err := r.db.First(&store, uuid).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, err
@@ -44,8 +44,8 @@ func (r *Repository) GetPriceStore(uuid uuid.UUID, promo *ds.Store) (uint64, err
 }
 
 func (r *Repository) GetPromoStore(uuid uuid.UUID) (int, string, error) {
-	var promo ds.Store
-	err := r.db.First(&promo, uuid).Error
+	var store ds.Store
+	err := r.db.First(&store, uuid).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, "", err
@@ -53,21 +53,21 @@ func (r *Repository) GetPromoStore(uuid uuid.UUID) (int, string, error) {
 		return 500, "", err
 	}
 
-	Promo := promo.Promo[0]
+	Promo := store.Promo[0]
 
-	if promo.Quantity > 0 {
-		err = r.db.Model(&promo).Update("Promo", promo.Promo[1:]).Error
+	if store.Quantity > 0 {
+		err = r.db.Model(&store).Update("Promo", store.Promo[1:]).Error
 		if err != nil {
 			return 500, "", err
 		}
-		err = r.db.Model(&promo).Update("Quantity", promo.Quantity-1).Error
+		err = r.db.Model(&store).Update("Quantity", store.Quantity-1).Error
 		if err != nil {
 			return 500, "", err
 		}
 	}
 
-	if promo.Quantity == 0 {
-		err = r.db.Delete(&promo, uuid).Error
+	if store.Quantity == 0 {
+		err = r.db.Delete(&store, uuid).Error
 		if err != nil {
 			return 500, "", err
 		}
@@ -76,8 +76,8 @@ func (r *Repository) GetPromoStore(uuid uuid.UUID) (int, string, error) {
 	return 0, Promo, nil
 }
 
-func (r *Repository) CreateStore(promo ds.Store) error {
-	err := r.db.Create(&promo).Error
+func (r *Repository) CreateStore(store ds.Store) error {
+	err := r.db.Create(&store).Error
 	return err
 }
 
@@ -112,7 +112,7 @@ func (r *Repository) CreateRandomStores() error {
 	nameList := []string{"Пятёрочка", "Магнит", "Лента", "ВиТ", "ДОДО", "Яндекс Плюс", "Lamoda", "OZON", "Wildberries"}
 	nameRandom := rand.Intn(len(nameList))
 	name := nameList[nameRandom]
-	quantity := rand.Intn(5) + 1
+	quantity := rand.Intn(20) + 1
 
 	var promoList []string
 	for i := 0; i < quantity; i++ {
@@ -132,15 +132,15 @@ func (r *Repository) CreateRandomStores() error {
 }
 
 func (r *Repository) ChangePriceStore(uuid uuid.UUID, price uint64) (int, error) {
-	var promo ds.Store
-	err := r.db.First(&promo, uuid).Error
+	var store ds.Store
+	err := r.db.First(&store, uuid).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, err
 		}
 		return 500, err
 	}
-	err = r.db.Model(&promo).Update("Price", price).Error
+	err = r.db.Model(&store).Update("Price", price).Error
 	if err != nil {
 		return 500, err
 	}
@@ -148,17 +148,100 @@ func (r *Repository) ChangePriceStore(uuid uuid.UUID, price uint64) (int, error)
 }
 
 func (r *Repository) DeleteStore(uuid uuid.UUID) (int, error) {
-	var promo ds.Store
-	err := r.db.First(&promo, uuid).Error
+	var store ds.Store
+	err := r.db.First(&store, uuid).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, err
 		}
 		return 500, err
 	}
-	err = r.db.Delete(&promo, uuid).Error
+	err = r.db.Delete(&store, uuid).Error
 	if err != nil {
 		return 500, err
 	}
 	return 0, nil
+}
+
+func (r *Repository) GetCart() ([]ds.Cart, error) {
+	var cart []ds.Cart
+	err := r.db.Order("store").Find(&cart).Error
+	return cart, err
+}
+
+func (r *Repository) GetStore(uuid uuid.UUID) (ds.Store, error) {
+	var store ds.Store
+	err := r.db.First(&store, uuid).Error
+	return store, err
+}
+
+func (r *Repository) GetQuantity(store uuid.UUID, cart *ds.Cart) (uint64, error) {
+	err := r.db.First(&cart, store).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
+	}
+	return 0, nil
+}
+
+func (r *Repository) IncreaseQuantity(store uuid.UUID) (uint64, error) {
+	var st ds.Store
+	err := r.db.First(&st, store).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
+	}
+
+	var cart ds.Cart
+	err = r.db.First(&cart, store).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			cart.Store = store
+			cart.Quantity = 0
+			err = r.db.Create(cart).Error
+			if err != nil {
+				return 0, err
+			}
+		} else {
+			return 0, err
+		}
+	}
+
+	if cart.Quantity < st.Quantity {
+		err = r.db.Model(&cart).Where(cart.Store).Update("Quantity", cart.Quantity+1).Error
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return cart.Quantity, nil
+}
+
+func (r *Repository) DecreaseQuantity(store uuid.UUID) (uint64, int, error) {
+	var cart ds.Cart
+	err := r.db.First(&cart, store).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, 404, err
+		}
+		return 0, 500, err
+	}
+	if cart.Quantity > 0 {
+		err = r.db.Model(&cart).Where(cart.Store).Update("Quantity", cart.Quantity-1).Error
+		if err != nil {
+			return 0, 500, err
+		}
+		if cart.Quantity == 0 {
+			err = r.db.Delete(&cart, store).Error
+			if err != nil {
+				return 0, 500, err
+			}
+			return 0, 0, nil
+		}
+	}
+	return cart.Quantity, 0, nil
 }
