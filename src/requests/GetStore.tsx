@@ -1,5 +1,5 @@
 import {useEffect, useReducer} from "react";
-import {getJsonStore} from "../modules";
+import {getFromBackend} from "../modules";
 
 const initialState = {store: ""}
 const success = "Success"
@@ -17,10 +17,10 @@ function reducer(state: any, action: { type: any; store: any; }) {
 
 export function GetStore(uuid: string) {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `store/${uuid}`
+    const url = `store/1/${uuid}`
 
     useEffect(() => {
-        getJsonStore(url).then((result) => {
+        getFromBackend(url).then((result) => {
             dispatch({type: success, store: result})
         })
     }, [url])

@@ -1,7 +1,6 @@
 import {IStore} from '../models'
 import {AddToCart} from "../requests/AddToCart";
 
-
 export function Store(props: { store: IStore }) {
     return (
         <div
@@ -12,12 +11,11 @@ export function Store(props: { store: IStore }) {
             />
 
             <p className="text-green-500 place-self-center text-2xl font-bold">
-                Скидка {props.store.Discount} рублей
+                Скидка {props.store.Discount} ₽
             </p>
 
-            <p className="text-blue-700 py-1 px-3 place-self-center text-2xl font-bold">
+            <p className="text-blue-700 place-self-center text-2xl font-bold">
                 В корзину:{AddToCart(0, props.store.UUID)}
-
             </p>
 
             <p className="text-red-600 place-self-center text-3xl font-bold">

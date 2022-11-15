@@ -1,5 +1,5 @@
 import {useEffect, useReducer} from "react";
-import {getJsonCart} from "../modules";
+import {getFromBackend} from "../modules";
 
 const initialState = {cart: []}
 const success = "Success"
@@ -20,7 +20,7 @@ export function GetCart() {
     const url = `cart`
 
     useEffect(() => {
-        getJsonCart(url).then((result) => {
+        getFromBackend(url).then((result) => {
             dispatch({type: success, payload: result})
         })
     }, [url])

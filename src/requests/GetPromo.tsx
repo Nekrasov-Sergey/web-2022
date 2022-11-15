@@ -1,6 +1,6 @@
 import {useEffect, useReducer} from "react";
 import {useLocation} from "react-router-dom";
-import {getJsonPromo} from "../modules";
+import {getFromBackend} from "../modules";
 
 const initialState = {promo: []}
 const success = "Success"
@@ -26,7 +26,7 @@ export function GetPromo() {
     const url = `store/promo/${useLocation().state.Quantity}/${useLocation().state.Store}`
 
     useEffect(() => {
-        getJsonPromo(url).then(result => {
+        getFromBackend(url).then(result => {
             dispatch({type: success, payload: result})
         }).catch(() => {
             dispatch({type: failure})

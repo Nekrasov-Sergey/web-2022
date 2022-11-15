@@ -30,8 +30,8 @@ export function Cart(props: { cart: ICart }) {
                 {Store.Price} ₽/шт
             </p>
 
-            <Link to={`/store/${Store.Name}`}
-                  className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
+            <Link to={`/store/cart/${Store.Name}`}
+                  className="border-4 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
                   state={{Name: Store.Name, Store: props.cart.Store, Quantity: props.cart.Quantity}}
             >
                 Купить

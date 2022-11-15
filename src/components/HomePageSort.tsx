@@ -1,10 +1,11 @@
 import {Store} from "./Store"
 import {GetStores} from "../requests/GetStores";
 import {IStore} from "../models";
-import {Link, } from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import React from "react";
 
-export function HomePage() {
+export function HomePageSort() {
+
     return (
         <div className="bg-yellow-50 min-h-screen">
             <p className="ml-4 text-2xl font-normal text-black">
@@ -15,8 +16,9 @@ export function HomePage() {
                 Доступные промокоды на Ноябрь 2022
             </p>
 
-            <p className="text-center text-2xl font-normal text-black">
+            <p className="text-center text-2xl font-normal text-black-500">
                 Сортировать по:{" "}
+
                 <Link to="/store/name" className="mr-2" state={{state: "name"}}>
                     названию
                 </Link>
@@ -27,7 +29,8 @@ export function HomePage() {
                     количеству
                 </Link>
             </p>
-            {GetStores("uuid").map((store: IStore) => {
+
+            {GetStores(useLocation().state.state).map((store: IStore) => {
                 return <Store store={store}/>
             })}
         </div>

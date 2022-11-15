@@ -16,7 +16,7 @@ export function Payment() {
                 / {useLocation().state.Name}
             </p>
 
-            <p className=" font-bold text-6xl text-pink-500 text-center">
+            <p className=" font-bold text-5xl text-pink-500 text-center">
                 Страница оплаты
             </p>
 

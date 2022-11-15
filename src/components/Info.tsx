@@ -10,7 +10,7 @@ export function Info() {
                 / info
             </p>
 
-            <p className="text-center font-bold text-6xl text-pink-500">
+            <p className="text-center font-bold text-5xl text-pink-500">
                 Freebie shop
             </p>
 

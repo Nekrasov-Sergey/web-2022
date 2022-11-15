@@ -2,6 +2,7 @@ import {Link} from "react-router-dom";
 import {ICart} from "../models";
 import {Cart} from "./Cart";
 import {GetCart} from "../requests/GetCart";
+import React from "react";
 
 export function CartPage() {
     return (
@@ -13,13 +14,21 @@ export function CartPage() {
                 / cart
             </p>
 
-            <p className="text-center font-bold text-6xl text-pink-500">
+            <p className="text-center font-bold text-5xl text-pink-500">
                 Корзина
             </p>
 
             {GetCart().map((cart: ICart) => {
                 return <Cart cart={cart}/>
             })}
+
+            <p className="my-8 text-center">
+                <Link to="/store"
+                      className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 rounded-full text-2xl font-bold"
+                >
+                    Обратно на главную
+                </Link>
+            </p>
         </div>
     )
 }

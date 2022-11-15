@@ -1,5 +1,5 @@
 import {useEffect, useReducer} from "react";
-import {getJsonStores} from "../modules";
+import {getFromBackend} from "../modules";
 
 const initialState = {stores: []}
 const success = "Success"
@@ -15,12 +15,12 @@ function reducer(state: any, action: { type: any; stores: any; }) {
     }
 }
 
-export function GetStores() {
+export function GetStores(sort: string) {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `store`
+    const url = `store/${sort}`
 
     useEffect(() => {
-        getJsonStores(url).then((result) => {
+        getFromBackend(url).then((result) => {
             dispatch({type: success, stores: result})
         })
     }, [url])
