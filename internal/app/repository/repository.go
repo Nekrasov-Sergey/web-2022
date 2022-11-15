@@ -27,9 +27,9 @@ func New() (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetStores() ([]ds.Store, error) {
+func (r *Repository) GetStores(sort string) ([]ds.Store, error) {
 	var stores []ds.Store
-	err := r.db.Order("uuid").Find(&stores).Error
+	err := r.db.Order(sort).Find(&stores).Error
 	return stores, err
 }
 
@@ -183,13 +183,8 @@ func (r *Repository) GetCart() ([]ds.Cart, error) {
 	return cart, err
 }
 
-func (r *Repository) GetStore(uuid uuid.UUID) (ds.Store, error) {
-	var store ds.Store
-	err := r.db.First(&store, uuid).Error
-	return store, err
-}
-
-func (r *Repository) GetQuantity(store uuid.UUID, cart *ds.Cart) (uint64, error) {
+func (r *Repository) DeleteCart(store uuid.UUID) (int, error) {
+	var cart ds.Cart
 	err := r.db.First(&cart, store).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -197,7 +192,18 @@ func (r *Repository) GetQuantity(store uuid.UUID, cart *ds.Cart) (uint64, error)
 		}
 		return 500, err
 	}
+
+	err = r.db.Delete(&cart, store).Error
+	if err != nil {
+		return 500, err
+	}
 	return 0, nil
+}
+
+func (r *Repository) GetStore(uuid uuid.UUID) (ds.Store, error) {
+	var store ds.Store
+	err := r.db.First(&store, uuid).Error
+	return store, err
 }
 
 func (r *Repository) IncreaseQuantity(store uuid.UUID) (uint64, error) {

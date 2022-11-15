@@ -22,7 +22,7 @@ func (a *Application) StartServer() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/store", a.GetStores)
+	r.GET("/store/:sort", a.GetStores)
 
 	r.GET("/store/price/:uuid", a.GetPriceStore)
 
@@ -37,15 +37,15 @@ func (a *Application) StartServer() {
 	//Запросы для корзины:
 	r.GET("/cart", a.GetCart)
 
-	r.GET("/store/:uuid", a.GetStore)
+	r.GET("/store/1/:uuid", a.GetStore)
 
 	r.GET("/store/promo/:quantity/:uuid", a.GetPromoStore)
-
-	r.GET("/cart/:store", a.GetQuantity)
 
 	r.GET("/cart/increase/:store", a.IncreaseQuantity)
 
 	r.GET("/cart/decrease/:store", a.DecreaseQuantity)
+
+	r.GET("/cart/delete/:store", a.DeleteCart)
 
 	_ = r.Run()
 
@@ -54,6 +54,7 @@ func (a *Application) StartServer() {
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
 
@@ -75,7 +76,8 @@ func CORSMiddleware() gin.HandlerFunc {
 // @Failure 		500 {object} swagger.StoreError
 // @Router       	/store [get]
 func (a *Application) GetStores(gCtx *gin.Context) {
-	resp, err := a.repo.GetStores()
+	sort := gCtx.Param("sort")
+	resp, err := a.repo.GetStores(sort)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
