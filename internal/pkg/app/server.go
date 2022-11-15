@@ -10,6 +10,7 @@ import (
 	"main/internal/app/ds"
 	"main/swagger"
 	"net/http"
+	"strconv"
 )
 
 func (a *Application) StartServer() {
@@ -25,8 +26,6 @@ func (a *Application) StartServer() {
 
 	r.GET("/store/price/:uuid", a.GetPriceStore)
 
-	r.GET("/store/promo/:uuid", a.GetPromoStore)
-
 	r.POST("/store", a.CreateStore)
 
 	r.POST("/store/random", a.CreateRandomStores)
@@ -39,6 +38,8 @@ func (a *Application) StartServer() {
 	r.GET("/cart", a.GetCart)
 
 	r.GET("/store/:uuid", a.GetStore)
+
+	r.GET("/store/promo/:quantity/:uuid", a.GetPromoStore)
 
 	r.GET("/cart/:store", a.GetQuantity)
 
@@ -156,6 +157,7 @@ func (a *Application) GetPriceStore(gCtx *gin.Context) {
 // @Failure 	 	500 {object} swagger.StoreError
 // @Router       	/store/promo/{UUID} [get]
 func (a *Application) GetPromoStore(gCtx *gin.Context) {
+	quantity, _ := strconv.Atoi(gCtx.Param("quantity"))
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
@@ -168,7 +170,7 @@ func (a *Application) GetPromoStore(gCtx *gin.Context) {
 		return
 	}
 
-	code, Promo, err := a.repo.GetPromoStore(UUID)
+	code, Promo, err := a.repo.GetPromoStore(uint64(quantity), UUID)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
@@ -191,11 +193,7 @@ func (a *Application) GetPromoStore(gCtx *gin.Context) {
 		}
 	}
 
-	gCtx.JSON(
-		http.StatusOK,
-		&swagger.StorePromo{
-			Promo: Promo,
-		})
+	gCtx.JSON(http.StatusOK, Promo)
 }
 
 // CreateStore		godoc

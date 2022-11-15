@@ -8,6 +8,7 @@ import (
 	"main/internal/app/ds"
 	"main/internal/app/dsn"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -43,7 +44,7 @@ func (r *Repository) GetPriceStore(uuid uuid.UUID, store *ds.Store) (uint64, err
 	return 0, nil
 }
 
-func (r *Repository) GetPromoStore(uuid uuid.UUID) (int, string, error) {
+func (r *Repository) GetPromoStore(quantity uint64, uuid uuid.UUID) (int, string, error) {
 	var store ds.Store
 	err := r.db.First(&store, uuid).Error
 	if err != nil {
@@ -53,14 +54,27 @@ func (r *Repository) GetPromoStore(uuid uuid.UUID) (int, string, error) {
 		return 500, "", err
 	}
 
-	Promo := store.Promo[0]
+	var cart ds.Cart
+	err = r.db.First(&cart, uuid).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, "", err
+		}
+		return 500, "", err
+	}
+	err = r.db.Delete(&cart, uuid).Error
+	if err != nil {
+		return 500, "", err
+	}
 
+	PromoSlice := store.Promo[0:quantity]
+	PromoString := strings.Join(PromoSlice, ", ")
 	if store.Quantity > 0 {
-		err = r.db.Model(&store).Update("Promo", store.Promo[1:]).Error
+		err = r.db.Model(&store).Update("Promo", store.Promo[quantity:]).Error
 		if err != nil {
 			return 500, "", err
 		}
-		err = r.db.Model(&store).Update("Quantity", store.Quantity-1).Error
+		err = r.db.Model(&store).Update("Quantity", store.Quantity-quantity).Error
 		if err != nil {
 			return 500, "", err
 		}
@@ -73,7 +87,7 @@ func (r *Repository) GetPromoStore(uuid uuid.UUID) (int, string, error) {
 		}
 	}
 
-	return 0, Promo, nil
+	return 0, PromoString, nil
 }
 
 func (r *Repository) CreateStore(store ds.Store) error {
