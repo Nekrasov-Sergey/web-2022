@@ -8,6 +8,10 @@ export function Navbar() {
             </p>
 
             <p className="pl-8 font-bold text-2xl inline text-green-400">
+                <Link to="/store/cart">КОРЗИНА</Link>
+            </p>
+
+            <p className="pl-8 font-bold text-2xl inline text-green-400">
                 <Link to="/store/info">О НАС</Link>
             </p>
         </nav>

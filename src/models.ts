@@ -7,3 +7,8 @@ export interface IStore {
     Promo: string[]
     Image: string
 }
+
+export interface ICart {
+    Store: string
+    Quantity: number
+}

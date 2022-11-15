@@ -2,17 +2,17 @@ import React, {useReducer} from "react";
 import {useLocation} from "react-router-dom";
 import {getJsonPromo} from "../modules";
 
-const initialState = {
-    promo: "",
-};
+const initialState = {promo: ""}
+const success = "Success"
+const failure = "Failure"
 
-const reducer = (state: any, action: { type: any; payload?: any; }) => {
+function reducer(state: any, action: { type: any; payload?: any; }) {
     switch (action.type) {
-        case "Success":
+        case success:
             return {
                 promo: action.payload
             }
-        case "Failure":
+        case failure:
             return {
                 promo: "ВСЁ!"
             }
@@ -27,9 +27,9 @@ export function GetPromo() {
 
     function Promo() {
         getJsonPromo(url).then(result => {
-            dispatch({type: "Success", payload: result})
+            dispatch({type: success, payload: result})
         }).catch(() => {
-            dispatch({type: "Failure"})
+            dispatch({type: failure})
         })
     }
 

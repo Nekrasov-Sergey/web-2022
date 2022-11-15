@@ -4,6 +4,7 @@ import {HomePage} from "./components/HomePage"
 import {Info} from "./components/Info"
 import {Payment} from "./components/Payment"
 import {NotFound} from "./components/NotFound";
+import {CartPage} from "./components/CartPage";
 
 export const ENDPOINT = "http://localhost:8080"
 
@@ -13,6 +14,7 @@ export default function App() {
             <Navbar/>
             <Routes>
                 <Route path="/store" element={<HomePage/>}/>
+                <Route path="/store/cart" element={<CartPage/>}/>
                 <Route path="/store/info" element={<Info/>}/>
                 <Route path="/store/:payment" element={<Payment/>}/>
                 <Route path="/store*" element={<NotFound/>}/>

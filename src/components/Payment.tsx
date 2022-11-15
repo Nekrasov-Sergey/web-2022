@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom"
 import {useLocation} from "react-router-dom"
 import React from 'react';
-import {GetPromo} from "./GetPromo";
+import {GetPromo} from "../requests/GetPromo";
 
 export function Payment() {
     return (
@@ -10,7 +10,7 @@ export function Payment() {
                 <Link to="/store" className="mr-2">
                     Freebie shop
                 </Link>
-                / {useLocation().state.Store}
+                / {useLocation().state.UUID}
             </p>
 
             <p className=" font-bold text-6xl text-pink-500 text-center">

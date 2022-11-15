@@ -1,6 +1,6 @@
 import {Store} from "./Store"
-import {GetStores} from "./GetStores";
-import { IStore } from "../models";
+import {GetStores} from "../requests/GetStores";
+import {IStore} from "../models";
 
 export function HomePage() {
     return (

@@ -1,13 +1,12 @@
 import {useEffect, useReducer} from "react";
 import {getJsonStores} from "../modules";
 
-const initialState = {
-    stores: [],
-}
+const initialState = {stores: []}
+const success = "Success"
 
-const reducer = (state: any, action: { type: any; stores: any; }) => {
+function reducer(state: any, action: { type: any; stores: any; }) {
     switch (action.type) {
-        case "FETCH_SUCCESS":
+        case success:
             return {
                 stores: action.stores
             }
@@ -22,7 +21,7 @@ export function GetStores() {
 
     useEffect(() => {
         getJsonStores(url).then((result) => {
-            dispatch({type: "FETCH_SUCCESS", stores: result})
+            dispatch({type: success, stores: result})
         })
     }, [url])
 
