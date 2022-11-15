@@ -1,6 +1,9 @@
-import {useEffect, useReducer} from "react";
+import {createContext, useEffect, useReducer} from "react";
 import {getFromBackend} from "../modules";
+import {StoreContext} from "../context";
 
+
+export const MyContext = createContext(StoreContext);
 const initialState = {stores: []}
 const success = "Success"
 

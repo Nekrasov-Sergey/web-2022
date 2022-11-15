@@ -1,5 +1,5 @@
 import {Store} from "./Store"
-import {GetStores} from "../requests/GetStores";
+import {GetStores, MyContext} from "../requests/GetStores";
 import {IStore} from "../models";
 import {Link, useLocation} from "react-router-dom";
 import React from "react";
@@ -31,7 +31,11 @@ export function HomePageSort() {
             </p>
 
             {GetStores(useLocation().state.state).map((store: IStore) => {
-                return <Store store={store}/>
+                return (
+                    <MyContext.Provider value={store}>
+                        <Store/>
+                    </MyContext.Provider>
+                )
             })}
         </div>
     )

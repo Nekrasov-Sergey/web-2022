@@ -1,6 +1,8 @@
-import {useEffect, useReducer} from "react";
+import {createContext, useEffect, useReducer} from "react";
 import {getFromBackend} from "../modules";
+import {CartContext} from "../context";
 
+export const MyContext1 = createContext(CartContext);
 const initialState = {cart: []}
 const success = "Success"
 

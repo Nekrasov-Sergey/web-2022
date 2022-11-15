@@ -1,11 +1,13 @@
-import {ICart} from '../models'
 import {AddToCart} from "../requests/AddToCart";
 import {GetStore} from "../requests/GetStore";
 import {Link} from "react-router-dom";
+import {useContext} from "react";
+import {MyContext1} from "../requests/GetCart";
 
+export function Cart() {
+    const ctx = useContext(MyContext1)
+    let Store = GetStore(ctx.Store)
 
-export function Cart(props: { cart: ICart }) {
-    let Store = GetStore(props.cart.Store)
     return (
         <div
             className="border-2 border-teal-200 mx-auto mt-4 w-1/2 h-40 py-5 px-5 rounded-lg grid grid-rows-2 grid-cols-3 bg-white"
@@ -19,7 +21,7 @@ export function Cart(props: { cart: ICart }) {
             </p>
 
             <p className="text-blue-700 py-1 px-3 place-self-center text-2xl font-bold">
-                Кол-во:{AddToCart(props.cart.Quantity, props.cart.Store)}
+                Кол-во:{AddToCart(ctx.Quantity, ctx.Store)}
             </p>
 
             <p className="text-red-600 place-self-center text-3xl font-bold">
@@ -32,7 +34,7 @@ export function Cart(props: { cart: ICart }) {
 
             <Link to={`/store/cart/${Store.Name}`}
                   className="border-4 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
-                  state={{Name: Store.Name, Store: props.cart.Store, Quantity: props.cart.Quantity}}
+                  state={{Name: Store.Name, Store: ctx.Store, Quantity: ctx.Quantity}}
             >
                 Купить
             </Link>

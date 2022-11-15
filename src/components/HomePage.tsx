@@ -1,7 +1,7 @@
 import {Store} from "./Store"
-import {GetStores} from "../requests/GetStores";
+import {GetStores, MyContext} from "../requests/GetStores";
 import {IStore} from "../models";
-import {Link, } from "react-router-dom";
+import {Link} from "react-router-dom";
 import React from "react";
 
 export function HomePage() {
@@ -28,7 +28,11 @@ export function HomePage() {
                 </Link>
             </p>
             {GetStores("uuid").map((store: IStore) => {
-                return <Store store={store}/>
+                return (
+                    <MyContext.Provider value={store}>
+                        <Store/>
+                    </MyContext.Provider>
+                )
             })}
         </div>
     )

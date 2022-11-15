@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import {ICart} from "../models";
 import {Cart} from "./Cart";
-import {GetCart} from "../requests/GetCart";
+import {GetCart, MyContext1} from "../requests/GetCart";
 import React from "react";
 
 export function CartPage() {
@@ -19,7 +19,11 @@ export function CartPage() {
             </p>
 
             {GetCart().map((cart: ICart) => {
-                return <Cart cart={cart}/>
+                return(
+                    <MyContext1.Provider value={cart}>
+                        <Cart/>
+                    </MyContext1.Provider>
+                )
             })}
 
             <p className="my-8 text-center">
