@@ -10,7 +10,10 @@ export function Payment() {
                 <Link to="/store" className="mr-2">
                     Freebie shop
                 </Link>
-                / {useLocation().state.UUID}
+                <Link to="/store/cart" className="mr-2">
+                    / cart
+                </Link>
+                / {useLocation().state.Name}
             </p>
 
             <p className=" font-bold text-6xl text-pink-500 text-center">
@@ -18,17 +21,17 @@ export function Payment() {
             </p>
 
             <p className="mt-8 font-medium text-4xl text-green-500 text-center">
-                Ваш промокод:
+                Ваши промокоды для магазина "{useLocation().state.Name}":
                 <p className="font-bold italic text-4xl text-red-700">
                     {GetPromo()}
                 </p>
             </p>
 
             <p className="my-8 text-center">
-                <Link to="/store"
+                <Link to="/store/cart"
                       className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 rounded-full text-2xl font-bold"
                 >
-                    Обратно на главную
+                    Обратно в корзину
                 </Link>
             </p>
 

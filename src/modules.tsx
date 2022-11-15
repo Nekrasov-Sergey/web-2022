@@ -10,7 +10,7 @@ export function getJsonStore (url: string) {
 }
 
 export function getJsonPromo(url: string) {
-    return axios.get(`${ENDPOINT}/${url}`).then(r => r.data.promo)
+    return axios.get(`${ENDPOINT}/${url}`).then(r => r.data)
 }
 
 export function getJsonCart (url: string)  {

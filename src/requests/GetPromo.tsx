@@ -1,8 +1,8 @@
-import React, {useReducer} from "react";
+import {useEffect, useReducer} from "react";
 import {useLocation} from "react-router-dom";
 import {getJsonPromo} from "../modules";
 
-const initialState = {promo: ""}
+const initialState = {promo: []}
 const success = "Success"
 const failure = "Failure"
 
@@ -23,24 +23,15 @@ function reducer(state: any, action: { type: any; payload?: any; }) {
 
 export function GetPromo() {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `store/promo/${useLocation().state.UUID}`
+    const url = `store/promo/${useLocation().state.Quantity}/${useLocation().state.Store}`
 
-    function Promo() {
+    useEffect(() => {
         getJsonPromo(url).then(result => {
             dispatch({type: success, payload: result})
         }).catch(() => {
             dispatch({type: failure})
         })
-    }
+    }, [url])
 
-    return (
-        <p>
-            <button onClick={() => Promo()}>
-                Показать:
-            </button>
-            <>
-                {" "}{state.promo}
-            </>
-        </p>
-    )
+    return (state.promo)
 }
