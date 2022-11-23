@@ -1,5 +1,5 @@
 package swagger
 
-type StoreDeleted struct {
+type Delete struct {
 	Success bool `json:"deleted,omitempty"`
 }

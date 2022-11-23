@@ -20,31 +20,209 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/store": {
+        "/cart": {
             "get": {
-                "description": "Get a list of all stores",
+                "description": "Get a list of the entire basket",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Info"
                 ],
-                "summary": "Get all stores",
+                "summary": "Get a whole cart",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ds.StoreDocs"
+                            "$ref": "#/definitions/ds.Cart"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
-            },
+            }
+        },
+        "/cart/1/{Store}": {
+            "get": {
+                "description": "Get one store from the shopping cart",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get store from the cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Магазин",
+                        "name": "Store",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ds.Cart"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/decrease/{Store}": {
+            "get": {
+                "description": "Decrease by 1 the number of promo codes in the cart",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Decrease by 1 in the cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Магазин",
+                        "name": "Store",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.CartDecrease"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/delete/{Store}": {
+            "delete": {
+                "description": "Delete a store in the cart using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Delete"
+                ],
+                "summary": "Delete a store in the cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Магазин",
+                        "name": "Store",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Delete"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/increase/{Store}": {
+            "get": {
+                "description": "Increase by 1 the number of promo codes in the cart",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Increase by 1 in the cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Магазин",
+                        "name": "Store",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.CartIncrease"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/store": {
             "post": {
                 "description": "Adding a new promo to database",
                 "produces": [
@@ -69,39 +247,39 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreCreated"
+                            "$ref": "#/definitions/swagger.Create"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
             }
         },
-        "/store/price/{UUID}": {
+        "/store/1/{UUID}": {
             "get": {
-                "description": "Get price of store by UUID",
+                "description": "Get store using its uuid",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Info"
                 ],
-                "summary": "Get price of store",
+                "summary": "Get store",
                 "parameters": [
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "UUID промо",
+                        "description": "UUID магазина",
                         "name": "UUID",
                         "in": "path",
                         "required": true
@@ -111,31 +289,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StorePrice"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/ds.StoreDocs"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
             }
         },
-        "/store/promo/{UUID}": {
+        "/store/promo/{Quantity}/{UUID}": {
             "get": {
                 "description": "Get a promo in store using its uuid",
                 "produces": [
@@ -148,8 +314,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Кол-во",
+                        "name": "Quantity",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "format": "uuid",
-                        "description": "UUID промо",
+                        "description": "UUID магазина",
                         "name": "UUID",
                         "in": "path",
                         "required": true
@@ -165,19 +338,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
@@ -208,19 +381,54 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreCreated"
+                            "$ref": "#/definitions/swagger.Create"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/store/{Sort}": {
+            "get": {
+                "description": "Get a list of all stores",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get all stores",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Сортировка",
+                        "name": "Sort",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ds.StoreDocs"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
@@ -240,7 +448,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "UUID промо",
+                        "description": "UUID магазина",
                         "name": "UUID",
                         "in": "path",
                         "required": true
@@ -259,25 +467,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreChanged"
+                            "$ref": "#/definitions/swagger.Change"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
@@ -295,7 +503,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "UUID промо",
+                        "description": "UUID магазина",
                         "name": "UUID",
                         "in": "path",
                         "required": true
@@ -305,25 +513,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreDeleted"
+                            "$ref": "#/definitions/swagger.Delete"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StoreError"
+                            "$ref": "#/definitions/swagger.Error"
                         }
                     }
                 }
@@ -331,6 +539,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "ds.Cart": {
+            "type": "object",
+            "properties": {
+                "quantity": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "store": {
+                    "type": "string",
+                    "example": "976c088c-f218-422b-aff6-f9e1cf792860"
+                }
+            }
+        },
         "ds.PriceStore": {
             "type": "object",
             "properties": {
@@ -385,7 +606,25 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StoreChanged": {
+        "swagger.CartDecrease": {
+            "type": "object",
+            "properties": {
+                "promo": {
+                    "type": "integer",
+                    "example": 4
+                }
+            }
+        },
+        "swagger.CartIncrease": {
+            "type": "object",
+            "properties": {
+                "promo": {
+                    "type": "integer",
+                    "example": 4
+                }
+            }
+        },
+        "swagger.Change": {
             "type": "object",
             "properties": {
                 "changed": {
@@ -393,16 +632,15 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StoreCreated": {
+        "swagger.Create": {
             "type": "object",
             "properties": {
                 "created": {
-                    "description": "success",
                     "type": "boolean"
                 }
             }
         },
-        "swagger.StoreDeleted": {
+        "swagger.Delete": {
             "type": "object",
             "properties": {
                 "deleted": {
@@ -410,29 +648,17 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StoreError": {
+        "swagger.Error": {
             "type": "object",
             "properties": {
                 "description": {
-                    "description": "description",
                     "type": "string"
                 },
                 "error": {
-                    "description": "error",
                     "type": "string"
                 },
                 "type": {
-                    "description": "type",
                     "type": "string"
-                }
-            }
-        },
-        "swagger.StorePrice": {
-            "type": "object",
-            "properties": {
-                "price": {
-                    "type": "integer",
-                    "example": 100
                 }
             }
         },
@@ -440,8 +666,13 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "promo": {
-                    "type": "string",
-                    "example": "gR3hr"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "gR3hr"
+                    ]
                 }
             }
         }

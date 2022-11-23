@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  ds.Cart:
+    properties:
+      quantity:
+        example: 3
+        type: integer
+      store:
+        example: 976c088c-f218-422b-aff6-f9e1cf792860
+        type: string
+    type: object
   ds.PriceStore:
     properties:
       price:
@@ -38,45 +47,50 @@ definitions:
         example: 3
         type: integer
     type: object
-  swagger.StoreChanged:
+  swagger.CartDecrease:
+    properties:
+      promo:
+        example: 4
+        type: integer
+    type: object
+  swagger.CartIncrease:
+    properties:
+      promo:
+        example: 4
+        type: integer
+    type: object
+  swagger.Change:
     properties:
       changed:
         type: boolean
     type: object
-  swagger.StoreCreated:
+  swagger.Create:
     properties:
       created:
-        description: success
         type: boolean
     type: object
-  swagger.StoreDeleted:
+  swagger.Delete:
     properties:
       deleted:
         type: boolean
     type: object
-  swagger.StoreError:
+  swagger.Error:
     properties:
       description:
-        description: description
         type: string
       error:
-        description: error
         type: string
       type:
-        description: type
         type: string
-    type: object
-  swagger.StorePrice:
-    properties:
-      price:
-        example: 100
-        type: integer
     type: object
   swagger.StorePromo:
     properties:
       promo:
-        example: gR3hr
-        type: string
+        example:
+        - gR3hr
+        items:
+          type: string
+        type: array
     type: object
 host: 127.0.0.1:8080
 info:
@@ -88,23 +102,140 @@ info:
   title: Freebie-shop
   version: "1.0"
 paths:
-  /store:
+  /cart:
     get:
-      description: Get a list of all stores
+      description: Get a list of the entire basket
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ds.StoreDocs'
+            $ref: '#/definitions/ds.Cart'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
-      summary: Get all stores
+            $ref: '#/definitions/swagger.Error'
+      summary: Get a whole cart
       tags:
       - Info
+  /cart/1/{Store}:
+    get:
+      description: Get one store from the shopping cart
+      parameters:
+      - description: Магазин
+        in: path
+        name: Store
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.Cart'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Get store from the cart
+      tags:
+      - Info
+  /cart/decrease/{Store}:
+    get:
+      description: Decrease by 1 the number of promo codes in the cart
+      parameters:
+      - description: Магазин
+        in: path
+        name: Store
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.CartDecrease'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Decrease by 1 in the cart
+      tags:
+      - Info
+  /cart/delete/{Store}:
+    delete:
+      description: Delete a store in the cart using its uuid
+      parameters:
+      - description: Магазин
+        in: path
+        name: Store
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.Delete'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Delete a store in the cart
+      tags:
+      - Delete
+  /cart/increase/{Store}:
+    get:
+      description: Increase by 1 the number of promo codes in the cart
+      parameters:
+      - description: Магазин
+        in: path
+        name: Store
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.CartIncrease'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Increase by 1 in the cart
+      tags:
+      - Info
+  /store:
     post:
       description: Adding a new promo to database
       parameters:
@@ -120,23 +251,46 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/swagger.StoreCreated'
+            $ref: '#/definitions/swagger.Create'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
       summary: Add a new promo
       tags:
       - Add
+  /store/{Sort}:
+    get:
+      description: Get a list of all stores
+      parameters:
+      - description: Сортировка
+        in: path
+        name: Sort
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.StoreDocs'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Get all stores
+      tags:
+      - Info
   /store/{UUID}:
     delete:
       description: Delete a store using its uuid
       parameters:
-      - description: UUID промо
+      - description: UUID магазина
         format: uuid
         in: path
         name: UUID
@@ -148,26 +302,26 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/swagger.StoreDeleted'
+            $ref: '#/definitions/swagger.Delete'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
       summary: Delete a store
       tags:
       - Delete
     put:
       description: Change the promo price using its uuid
       parameters:
-      - description: UUID промо
+      - description: UUID магазина
         format: uuid
         in: path
         name: UUID
@@ -185,27 +339,27 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/swagger.StoreChanged'
+            $ref: '#/definitions/swagger.Change'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
       summary: Change promo price
       tags:
       - Change
-  /store/price/{UUID}:
+  /store/1/{UUID}:
     get:
-      description: Get price of store by UUID
+      description: Get store using its uuid
       parameters:
-      - description: UUID промо
+      - description: UUID магазина
         format: uuid
         in: path
         name: UUID
@@ -217,27 +371,24 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/swagger.StorePrice'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/swagger.StoreError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/ds.StoreDocs'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
-      summary: Get price of store
+            $ref: '#/definitions/swagger.Error'
+      summary: Get store
       tags:
       - Info
-  /store/promo/{UUID}:
+  /store/promo/{Quantity}/{UUID}:
     get:
       description: Get a promo in store using its uuid
       parameters:
-      - description: UUID промо
+      - description: Кол-во
+        in: path
+        name: Quantity
+        required: true
+        type: string
+      - description: UUID магазина
         format: uuid
         in: path
         name: UUID
@@ -253,15 +404,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
       summary: Get a promo
       tags:
       - Info
@@ -281,15 +432,15 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/swagger.StoreCreated'
+            $ref: '#/definitions/swagger.Create'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StoreError'
+            $ref: '#/definitions/swagger.Error'
       summary: Add a new random promo
       tags:
       - Add
