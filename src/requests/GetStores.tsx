@@ -3,7 +3,7 @@ import {getFromBackend} from "../modules";
 import {StoreContext} from "../context";
 
 
-export const MyContext = createContext(StoreContext);
+export const ContextStore = createContext(StoreContext);
 const initialState = {stores: []}
 const success = "Success"
 

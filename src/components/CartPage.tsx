@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import {ICart} from "../models";
 import {Cart} from "./Cart";
-import {GetCart, MyContext1} from "../requests/GetCart";
+import {GetCart, ContextCart} from "../requests/GetCart";
 import React from "react";
 
 export function CartPage() {
@@ -20,9 +20,9 @@ export function CartPage() {
 
             {GetCart().map((cart: ICart) => {
                 return(
-                    <MyContext1.Provider value={cart}>
+                    <ContextCart.Provider value={cart}>
                         <Cart/>
-                    </MyContext1.Provider>
+                    </ContextCart.Provider>
                 )
             })}
 

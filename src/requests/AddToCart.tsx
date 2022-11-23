@@ -1,5 +1,5 @@
 import {useReducer} from "react";
-import {getFromBackend} from "../modules";
+import {deleteFromBackend, getFromBackend} from "../modules";
 
 const increase = "Increase"
 const decrease = "Decrease"
@@ -30,8 +30,8 @@ function reducer(state: any, action: { type: any; payload?: any; }) {
 }
 
 
-export function AddToCart(Quantity: number, Store: string) {
-    const [state, dispatch] = useReducer(reducer, {count: Quantity});
+export function AddToCart(Store: string) {
+    const [dispatch] = useReducer(reducer, {count: 0});
     const url1 = `cart/increase/${Store}`
     const url2 = `cart/decrease/${Store}`
     const url3 = `cart/delete/${Store}`
@@ -53,18 +53,20 @@ export function AddToCart(Quantity: number, Store: string) {
     }
 
     function Del() {
-        getFromBackend(url3).then(() => {
+        deleteFromBackend(url3).then(() => {
             dispatch({type: del})
         }).catch(() => {
             dispatch({type: failure})
         })
     }
+
     return (
         <>
-            {" "}{state.count}{" "}
-            <button onClick={() => Decr()}>-</button>
-            <button onClick={() => Incr()}>+</button>
-            <button onClick={() => Del()}>DEL</button>
+            <form className="inline">
+                <button onClick={() => Decr()}>-</button>
+                <button onClick={() => Incr()}>+</button>
+                <button onClick={() => Del()}>DEL</button>
+            </form>
         </>
     );
 }

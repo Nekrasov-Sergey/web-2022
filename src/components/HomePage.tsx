@@ -1,5 +1,5 @@
 import {Store} from "./Store"
-import {GetStores, MyContext} from "../requests/GetStores";
+import {GetStores, ContextStore} from "../requests/GetStores";
 import {IStore} from "../models";
 import {Link} from "react-router-dom";
 import React from "react";
@@ -17,23 +17,26 @@ export function HomePage() {
 
             <p className="text-center text-2xl font-normal text-black">
                 Сортировать по:{" "}
-                <Link to="/store/name" className="mr-2" state={{state: "name"}}>
+                <Link to="/store/name" className="mr-2" state={{sort: "name"}}>
                     названию
                 </Link>
-                <Link to="/store/price" className="mr-2" state={{state: "price"}}>
+
+                <Link to="/store/price" className="mr-2" state={{sort: "price"}}>
                     цене
                 </Link>
-                <Link to="/store/quantity" className="mr-2" state={{state: "quantity"}}>
+                <Link to="/store/quantity" className="mr-2" state={{sort: "quantity"}}>
                     количеству
                 </Link>
             </p>
+
             {GetStores("uuid").map((store: IStore) => {
                 return (
-                    <MyContext.Provider value={store}>
+                    <ContextStore.Provider value={store}>
                         <Store/>
-                    </MyContext.Provider>
+                    </ContextStore.Provider>
                 )
             })}
         </div>
+
     )
 }

@@ -2,10 +2,10 @@ import {AddToCart} from "../requests/AddToCart";
 import {GetStore} from "../requests/GetStore";
 import {Link} from "react-router-dom";
 import {useContext} from "react";
-import {MyContext1} from "../requests/GetCart";
+import {ContextCart} from "../requests/GetCart";
 
 export function Cart() {
-    const ctx = useContext(MyContext1)
+    const ctx = useContext(ContextCart)
     let Store = GetStore(ctx.Store)
 
     return (
@@ -20,9 +20,10 @@ export function Cart() {
                 Скидка {Store.Discount} рублей
             </p>
 
-            <p className="text-blue-700 py-1 px-3 place-self-center text-2xl font-bold">
-                Кол-во:{AddToCart(ctx.Quantity, ctx.Store)}
+            <p className="text-blue-700 place-self-center text-2xl font-bold">
+                Кол-во:{" "}{ctx.Quantity}{" "}{AddToCart(ctx.Store)}
             </p>
+
 
             <p className="text-red-600 place-self-center text-3xl font-bold">
                 {Store.Name}
