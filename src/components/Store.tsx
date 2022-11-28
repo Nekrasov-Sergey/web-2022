@@ -1,7 +1,7 @@
-import {AddToCart} from "../requests/AddToCart";
 import {useContext} from "react";
 import {ContextStore} from "../requests/GetStores";
 import {GetCart1} from "../requests/GetCart1";
+import {ChangeCart} from "../requests/ChangeCart";
 
 export function Store() {
     const ctx = useContext(ContextStore)
@@ -19,7 +19,7 @@ export function Store() {
             </p>
 
             <p className="text-blue-700 place-self-center text-2xl font-bold">
-                В корзину:{" "}{Cart.Quantity}{" "}{AddToCart(ctx.UUID)}
+                В корзину:{" "}{Cart.Quantity}{" "}{ChangeCart(ctx.UUID)}
             </p>
 
             <p className="text-red-600 place-self-center text-3xl font-bold">

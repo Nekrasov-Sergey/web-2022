@@ -23,7 +23,7 @@ function reducer(state: any, action: { type: any; payload?: any; }) {
 
 export function GetPromo() {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `store/promo/${useLocation().state.Quantity}/${useLocation().state.Store}`
+    const url = `store/${useLocation().state.Store}/${useLocation().state.Quantity}`
 
     useEffect(() => {
         getFromBackend(url).then(result => {

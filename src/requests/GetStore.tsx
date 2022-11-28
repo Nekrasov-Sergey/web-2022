@@ -17,7 +17,7 @@ function reducer(state: any, action: { type: any; store: any; }) {
 
 export function GetStore(uuid: string) {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `store/1/${uuid}`
+    const url = `store/${uuid}`
 
     useEffect(() => {
         getFromBackend(url).then((result) => {

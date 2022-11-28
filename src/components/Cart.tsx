@@ -1,4 +1,4 @@
-import {AddToCart} from "../requests/AddToCart";
+import {ChangeCart} from "../requests/ChangeCart";
 import {GetStore} from "../requests/GetStore";
 import {Link} from "react-router-dom";
 import {useContext} from "react";
@@ -21,7 +21,7 @@ export function Cart() {
             </p>
 
             <p className="text-blue-700 place-self-center text-2xl font-bold">
-                Кол-во:{" "}{ctx.Quantity}{" "}{AddToCart(ctx.Store)}
+                Кол-во:{" "}{ctx.Quantity}{" "}{ChangeCart(ctx.Store)}
             </p>
 
 

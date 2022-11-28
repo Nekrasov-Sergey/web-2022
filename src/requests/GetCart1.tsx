@@ -17,7 +17,7 @@ function reducer(state: any, action: { type: any; cart: any; }) {
 
 export function GetCart1(store: string) {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `cart/1/${store}`
+    const url = `cart/${store}`
 
     useEffect(() => {
         getFromBackend(url).then((result) => {

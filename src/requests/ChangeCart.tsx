@@ -30,7 +30,7 @@ function reducer(state: any, action: { type: any; payload?: any; }) {
 }
 
 
-export function AddToCart(Store: string) {
+export function ChangeCart(Store: string) {
     const [dispatch] = useReducer(reducer, {count: 0});
     const url1 = `cart/increase/${Store}`
     const url2 = `cart/decrease/${Store}`

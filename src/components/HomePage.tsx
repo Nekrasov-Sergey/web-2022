@@ -5,12 +5,12 @@ import React, {useState} from "react";
 import {Box, Slider} from "@mui/material";
 
 export function HomePage() {
-    const stores = GetStores("uuid")
+    const stores = GetStores()
 
     const [name, setName] = useState('')
 
-    const filteredStores = stores.filter((car: { Name: string }) => {
-        return car.Name.toLowerCase().includes(name.toLowerCase())
+    const filteredStores = stores.filter((store: { Name: string }) => {
+        return store.Name.toLowerCase().includes(name.toLowerCase())
     })
 
     const [price, setPrice] = React.useState<number[]>([0, 1000])

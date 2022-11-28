@@ -18,9 +18,9 @@ function reducer(state: any, action: { type: any; stores: any; }) {
     }
 }
 
-export function GetStores(sort: string) {
+export function GetStores() {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `store/${sort}`
+    const url = `store`
 
     useEffect(() => {
         getFromBackend(url).then((result) => {
