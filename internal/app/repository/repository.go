@@ -27,9 +27,9 @@ func New() (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetStores(sort string) ([]ds.Store, error) {
+func (r *Repository) GetStores() ([]ds.Store, error) {
 	var stores []ds.Store
-	err := r.db.Order(sort).Find(&stores).Error
+	err := r.db.Order("uuid").Find(&stores).Error
 	return stores, err
 }
 
@@ -114,7 +114,7 @@ var image = map[string]string{
 func (r *Repository) CreateRandomStores() error {
 	rand.Seed(time.Now().UnixNano())
 
-	price := (rand.Intn(99) + 1) * 10
+	price := (rand.Intn(100) + 1) * 10
 
 	discount := price * 2
 

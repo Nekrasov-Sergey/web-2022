@@ -119,7 +119,7 @@ paths:
       summary: Get a whole cart
       tags:
       - Info
-  /cart/1/{Store}:
+  /cart/{Store}:
     get:
       description: Get one store from the shopping cart
       parameters:
@@ -236,6 +236,22 @@ paths:
       tags:
       - Info
   /store:
+    get:
+      description: Get a list of all stores
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.StoreDocs'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Get all stores
+      tags:
+      - Info
     post:
       description: Adding a new promo to database
       parameters:
@@ -263,29 +279,6 @@ paths:
       summary: Add a new promo
       tags:
       - Add
-  /store/{Sort}:
-    get:
-      description: Get a list of all stores
-      parameters:
-      - description: Сортировка
-        in: path
-        name: Sort
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ds.StoreDocs'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/swagger.Error'
-      summary: Get all stores
-      tags:
-      - Info
   /store/{UUID}:
     delete:
       description: Delete a store using its uuid
@@ -318,6 +311,29 @@ paths:
       summary: Delete a store
       tags:
       - Delete
+    get:
+      description: Get store using its uuid
+      parameters:
+      - description: UUID магазина
+        format: uuid
+        in: path
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.StoreDocs'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.Error'
+      summary: Get store
+      tags:
+      - Info
     put:
       description: Change the promo price using its uuid
       parameters:
@@ -355,43 +371,19 @@ paths:
       summary: Change promo price
       tags:
       - Change
-  /store/1/{UUID}:
-    get:
-      description: Get store using its uuid
-      parameters:
-      - description: UUID магазина
-        format: uuid
-        in: path
-        name: UUID
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ds.StoreDocs'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/swagger.Error'
-      summary: Get store
-      tags:
-      - Info
-  /store/promo/{Quantity}/{UUID}:
+  /store/{UUID}/{Quantity}:
     get:
       description: Get a promo in store using its uuid
       parameters:
-      - description: Кол-во
-        in: path
-        name: Quantity
-        required: true
-        type: string
       - description: UUID магазина
         format: uuid
         in: path
         name: UUID
+        required: true
+        type: string
+      - description: Кол-во
+        in: path
+        name: Quantity
         required: true
         type: string
       produces:

@@ -14,13 +14,11 @@ import (
 // @Description  	Get a list of all stores
 // @Tags         	Info
 // @Produce      	json
-// @Param 			Sort path string true "Сортировка"
 // @Success      	200 {object} ds.StoreDocs
 // @Failure 		500 {object} swagger.Error
-// @Router       	/store/{Sort} [get]
+// @Router       	/store [get]
 func (a *Application) GetStores(gCtx *gin.Context) {
-	sort := gCtx.Param("sort")
-	resp, err := a.repo.GetStores(sort)
+	resp, err := a.repo.GetStores()
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -43,7 +41,7 @@ func (a *Application) GetStores(gCtx *gin.Context) {
 // @Param 			UUID path string true "UUID магазина" format(uuid)
 // @Success      	200 {object} ds.StoreDocs
 // @Failure 		500 {object} swagger.Error
-// @Router       	/store/1/{UUID} [get]
+// @Router       	/store/{UUID} [get]
 func (a *Application) GetStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	resp, err := a.repo.GetStore(UUID)
@@ -66,16 +64,16 @@ func (a *Application) GetStore(gCtx *gin.Context) {
 // @Description 	Get a promo in store using its uuid
 // @Tags         	Info
 // @Produce      	json
-// @Param 			Quantity path string true "Кол-во"
 // @Param 			UUID path string true "UUID магазина" format(uuid)
+// @Param 			Quantity path string true "Кол-во"
 // @Success      	200 {object} swagger.StorePromo
 // @Failure 		400 {object} swagger.Error
 // @Failure 		404 {object} swagger.Error
 // @Failure 	 	500 {object} swagger.Error
-// @Router       	/store/promo/{Quantity}/{UUID} [get]
+// @Router       	/store/{UUID}/{Quantity} [get]
 func (a *Application) GetPromoStore(gCtx *gin.Context) {
-	quantity, _ := strconv.Atoi(gCtx.Param("quantity"))
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	quantity, _ := strconv.Atoi(gCtx.Param("quantity"))
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,

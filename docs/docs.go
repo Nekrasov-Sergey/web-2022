@@ -46,47 +46,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/cart/1/{Store}": {
-            "get": {
-                "description": "Get one store from the shopping cart",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Info"
-                ],
-                "summary": "Get store from the cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Магазин",
-                        "name": "Store",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ds.Cart"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/cart/decrease/{Store}": {
             "get": {
                 "description": "Decrease by 1 the number of promo codes in the cart",
@@ -222,7 +181,72 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart/{Store}": {
+            "get": {
+                "description": "Get one store from the shopping cart",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get store from the cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Магазин",
+                        "name": "Store",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ds.Cart"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/store": {
+            "get": {
+                "description": "Get a list of all stores",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get all stores",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ds.StoreDocs"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Adding a new promo to database",
                 "produces": [
@@ -252,97 +276,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/store/1/{UUID}": {
-            "get": {
-                "description": "Get store using its uuid",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Info"
-                ],
-                "summary": "Get store",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "UUID магазина",
-                        "name": "UUID",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ds.StoreDocs"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/store/promo/{Quantity}/{UUID}": {
-            "get": {
-                "description": "Get a promo in store using its uuid",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Info"
-                ],
-                "summary": "Get a promo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Кол-во",
-                        "name": "Quantity",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "UUID магазина",
-                        "name": "UUID",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.StorePromo"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/swagger.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/swagger.Error"
                         }
@@ -399,21 +332,22 @@ const docTemplate = `{
                 }
             }
         },
-        "/store/{Sort}": {
+        "/store/{UUID}": {
             "get": {
-                "description": "Get a list of all stores",
+                "description": "Get store using its uuid",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Info"
                 ],
-                "summary": "Get all stores",
+                "summary": "Get store",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Сортировка",
-                        "name": "Sort",
+                        "format": "uuid",
+                        "description": "UUID магазина",
+                        "name": "UUID",
                         "in": "path",
                         "required": true
                     }
@@ -432,9 +366,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/store/{UUID}": {
+            },
             "put": {
                 "description": "Change the promo price using its uuid",
                 "produces": [
@@ -514,6 +446,61 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/swagger.Delete"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/store/{UUID}/{Quantity}": {
+            "get": {
+                "description": "Get a promo in store using its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get a promo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "UUID магазина",
+                        "name": "UUID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Кол-во",
+                        "name": "Quantity",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.StorePromo"
                         }
                     },
                     "400": {

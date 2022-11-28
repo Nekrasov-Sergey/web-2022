@@ -19,11 +19,11 @@ func (a *Application) StartServer() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Запросы для магазина:
-	r.GET("/store/:sort", a.GetStores)
+	r.GET("/store", a.GetStores)
 
-	r.GET("/store/1/:uuid", a.GetStore)
+	r.GET("/store/:uuid", a.GetStore)
 
-	r.GET("/store/promo/:quantity/:uuid", a.GetPromoStore)
+	r.GET("/store/:uuid/:quantity", a.GetPromoStore)
 
 	r.POST("/store", a.CreateStore)
 
@@ -36,7 +36,7 @@ func (a *Application) StartServer() {
 	// Запросы для корзины:
 	r.GET("/cart", a.GetCart)
 
-	r.GET("/cart/1/:store", a.GetCart1)
+	r.GET("/cart/:store", a.GetCart1)
 
 	r.GET("/cart/increase/:store", a.IncreaseQuantity)
 

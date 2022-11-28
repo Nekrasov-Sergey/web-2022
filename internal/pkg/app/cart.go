@@ -40,7 +40,7 @@ func (a *Application) GetCart(gCtx *gin.Context) {
 // @Success      	200 {object} ds.Cart
 // @Failure 		400 {object} swagger.Error
 // @Failure 		500 {object} swagger.Error
-// @Router       	/cart/1/{Store} [get]
+// @Router       	/cart/{Store} [get]
 func (a *Application) GetCart1(gCtx *gin.Context) {
 	store, err := uuid.Parse(gCtx.Param("store"))
 	if err != nil {
