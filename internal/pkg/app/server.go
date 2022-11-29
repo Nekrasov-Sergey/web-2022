@@ -6,6 +6,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "main/docs"
+	"main/internal/app/role"
 )
 
 func (a *Application) StartServer() {
@@ -43,6 +44,15 @@ func (a *Application) StartServer() {
 	r.GET("/cart/decrease/:store", a.DecreaseQuantity)
 
 	r.DELETE("/cart/delete/:store", a.DeleteCart)
+
+	// Запросы для авторизации
+	r.POST("/login", a.Login)
+
+	r.POST("/sign_up", a.Register)
+
+	r.GET("/logout", a.Logout)
+
+	r.Use(a.WithAuthCheck(role.Manager, role.Admin, role.Buyer)).GET("/ping", a.Ping)
 
 	_ = r.Run()
 

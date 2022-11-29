@@ -2,13 +2,13 @@
 -- +goose StatementBegin
 create table stores
 (
-    UUID     uuid NOT NULL DEFAULT uuid_generate_v4() primary key,
-    Name     text,
-    Discount int,
-    Price    int,
-    Quantity int,
-    Promo    text[],
-    Image    text
+    uuid     uuid NOT NULL DEFAULT uuid_generate_v4() primary key,
+    name     text,
+    discount int,
+    price    int,
+    quantity int,
+    promo    text[],
+    image    text
 );
 
 

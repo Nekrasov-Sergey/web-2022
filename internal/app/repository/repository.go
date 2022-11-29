@@ -6,7 +6,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"main/internal/app/ds"
-	"main/internal/app/dsn"
 	"math/rand"
 	"strings"
 	"time"
@@ -16,8 +15,8 @@ type Repository struct {
 	db *gorm.DB
 }
 
-func New() (*Repository, error) {
-	db, err := gorm.Open(postgres.Open(dsn.FromEnv()), &gorm.Config{})
+func New(dsn string) (*Repository, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
@@ -259,4 +258,21 @@ func (r *Repository) DecreaseQuantity(store uuid.UUID) (uint64, int, error) {
 		}
 	}
 	return cart.Quantity, 0, nil
+}
+
+func (r *Repository) Register(user *ds.User) error {
+	return r.db.Create(user).Error
+}
+
+func (r *Repository) GetUserByLogin(login string) (*ds.User, error) {
+	user := &ds.User{
+		Name: login,
+	}
+
+	err := r.db.First(user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
