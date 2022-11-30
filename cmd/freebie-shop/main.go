@@ -36,5 +36,5 @@ func main() {
 		os.Exit(2)
 	}
 
-	log.Println("app terminated")
+	log.Println("application terminated")
 }

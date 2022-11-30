@@ -52,7 +52,7 @@ func (a *Application) StartServer() {
 
 	r.GET("/logout", a.Logout)
 
-	r.Use(a.WithAuthCheck(role.Manager, role.Admin, role.Buyer)).GET("/ping", a.Ping)
+	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/ping", a.Ping)
 
 	_ = r.Run()
 

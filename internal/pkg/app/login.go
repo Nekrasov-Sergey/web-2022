@@ -71,11 +71,14 @@ func (a *Application) Login(gCtx *gin.Context) {
 			return
 		}
 
+		gCtx.SetCookie("access_token", strToken, int(cfg.JWT.ExpiresIn), "/", "localhost", false, false)
+
 		gCtx.JSON(http.StatusOK, loginResp{
 			ExpiresIn:   cfg.JWT.ExpiresIn,
 			AccessToken: strToken,
 			TokenType:   "Bearer",
 		})
+		return
 	}
 
 	gCtx.AbortWithStatus(http.StatusForbidden) // отдаем 403 ответ в знак того что доступ запрещен
@@ -145,6 +148,10 @@ func generateHashString(s string) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
+type logoutResp struct {
+	Status bool `json:"status"`
+}
+
 func (a *Application) Logout(gCtx *gin.Context) {
 	jwtStr := gCtx.GetHeader("Authorization")
 	if !strings.HasPrefix(jwtStr, jwtPrefix) { // если нет префикса то нас дурят!
@@ -174,5 +181,9 @@ func (a *Application) Logout(gCtx *gin.Context) {
 		return
 	}
 
-	gCtx.Status(http.StatusOK)
+	gCtx.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+
+	gCtx.JSON(http.StatusOK, &logoutResp{
+		Status: true,
+	})
 }

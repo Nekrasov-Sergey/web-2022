@@ -41,8 +41,6 @@ type JWTConfig struct {
 }
 
 func NewConfig() (*Config, error) {
-	var err error
-
 	configName := "config"
 	_ = godotenv.Load()
 	if os.Getenv("CONFIG_NAME") != "" {
@@ -55,7 +53,7 @@ func NewConfig() (*Config, error) {
 	viper.AddConfigPath(".")
 	viper.WatchConfig()
 
-	err = viper.ReadInConfig()
+	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, err
 	}

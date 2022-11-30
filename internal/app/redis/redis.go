@@ -8,8 +8,6 @@ import (
 	"strconv"
 )
 
-const servicePrefix = "awesome_service."
-
 type Client struct {
 	cfg    config.RedisConfig
 	client *redis.Client

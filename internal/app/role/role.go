@@ -7,7 +7,3 @@ const (
 	Manager
 	Admin
 )
-
-//func (r Role) String() string {
-//	return string(r)
-//}
