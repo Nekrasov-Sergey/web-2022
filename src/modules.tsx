@@ -11,10 +11,12 @@ export function deleteFromBackend(url: string) {
 
 export function createUser(url: string, name: string, pass: string) {
     const body = {name: name, pass: pass}
-    return axios.post(`${ENDPOINT}/${url}`, body).then(function (response) {
-        console.log(response);
+    return axios.post(`${ENDPOINT}/${url}`, body, {withCredentials: true}).then(function (response) {
+        console.log(response)
+        window.location.replace("/login")
+    }).catch(function () {
+        window.location.replace("/registration")
     })
-
 }
 
 export function loginUser(url: string, name: string, pass: string) {

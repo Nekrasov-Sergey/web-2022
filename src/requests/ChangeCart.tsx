@@ -1,5 +1,6 @@
 import {useReducer} from "react";
 import {deleteFromBackend, getFromBackend} from "../modules";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const increase = "Increase"
 const decrease = "Decrease"
@@ -28,7 +29,6 @@ function reducer(state: any, action: { type: any; payload?: any; }) {
             return state
     }
 }
-
 
 export function ChangeCart(Store: string) {
     const [dispatch] = useReducer(reducer, {count: 0});
@@ -61,14 +61,14 @@ export function ChangeCart(Store: string) {
     }
 
     return (
-        <>
-            <form className="inline">
-                <button onClick={() => Decr()}>-</button>
-                <button onClick={() => Incr()}>+</button>
-                <button onClick={() => Del()}>DEL</button>
-            </form>
-        </>
-    );
+        <form className="inline">
+            <button onClick={() => Decr()}>-</button>
+            <button onClick={() => Incr()}>+</button>
+            <button onClick={() => Del()}>
+                <DeleteIcon/>
+            </button>
+        </form>
+    )
 }
 
 
