@@ -5,9 +5,20 @@ export function getFromBackend(url: string) {
     return axios.get(`${ENDPOINT}/${url}`).then(r => r.data)
 }
 
-export function deleteFromBackend(url: string) {
-    return axios.delete(`${ENDPOINT}/${url}`).then(r => r.data)
+export function getFromBackendToken(url: string) {
+    let access_token = getToken()
+    return axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
+            "Authorization": `Bearer ${access_token}`
+        }}).then(r => r.data)
 }
+
+export function deleteFromBackendToken(url: string) {
+    let access_token = getToken()
+    return axios.delete(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
+            "Authorization": `Bearer ${access_token}`
+        }}).then(r => r.data)
+}
+
 
 export function createUser(url: string, name: string, pass: string) {
     const body = {name: name, pass: pass}
@@ -42,3 +53,13 @@ export function logoutUser(url: string) {
     })
 }
 
+export function getToken() {
+    let tokens = document.cookie.split(' ')
+    let access_token = ''
+    for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i].startsWith("access_token=")) {
+            access_token = tokens[i].replace("access_token=", "")
+        }
+    }
+    return access_token.replace(";", "")
+}

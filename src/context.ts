@@ -11,6 +11,6 @@ export let StoreContext: IStore = {
 }
 
 export let CartContext: ICart = {
-    Store: "",
+    StoreUUID: "",
     Quantity: 0
 }

@@ -9,6 +9,6 @@ export interface IStore {
 }
 
 export interface ICart {
-    Store: string
+    StoreUUID: string
     Quantity: number
 }

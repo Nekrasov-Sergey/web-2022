@@ -6,7 +6,7 @@ import {ContextCart} from "../requests/GetCart";
 
 export function Cart() {
     const ctx = useContext(ContextCart)
-    let Store = GetStore(ctx.Store)
+    let Store = GetStore(ctx.StoreUUID)
 
     return (
         <div
@@ -21,7 +21,7 @@ export function Cart() {
             </p>
 
             <p className="text-blue-700 place-self-center text-2xl font-bold">
-                Кол-во:{" "}{ctx.Quantity}{" "}{ChangeCart(ctx.Store)}
+                Кол-во:{" "}{ctx.Quantity}{" "}{ChangeCart(ctx.StoreUUID)}
             </p>
 
 
@@ -35,7 +35,7 @@ export function Cart() {
 
             <Link to={`/payment`}
                   className="border-4 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-1 px-3 place-self-center rounded-full text-2xl font-bold"
-                  state={{Name: Store.Name, Store: ctx.Store, Quantity: ctx.Quantity}}
+                  state={{Name: Store.Name, Store: ctx.StoreUUID, Quantity: ctx.Quantity}}
             >
                 Купить
             </Link>

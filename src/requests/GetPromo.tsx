@@ -1,6 +1,6 @@
 import {useEffect, useReducer} from "react";
 import {useLocation} from "react-router-dom";
-import {getFromBackend} from "../modules";
+import {getFromBackendToken} from "../modules";
 
 const initialState = {promo: []}
 const success = "Success"
@@ -26,7 +26,7 @@ export function GetPromo() {
     const url = `store/${useLocation().state.Store}/${useLocation().state.Quantity}`
 
     useEffect(() => {
-        getFromBackend(url).then(result => {
+        getFromBackendToken(url).then(result => {
             dispatch({type: success, payload: result})
         }).catch(() => {
             dispatch({type: failure})

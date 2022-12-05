@@ -1,5 +1,5 @@
 import {createContext, useEffect, useReducer} from "react";
-import {getFromBackend} from "../modules";
+import {getFromBackendToken} from "../modules";
 import {CartContext} from "../context";
 
 export const ContextCart = createContext(CartContext);
@@ -22,7 +22,7 @@ export function GetCart() {
     const url = `cart`
 
     useEffect(() => {
-        getFromBackend(url).then((result) => {
+        getFromBackendToken(url).then((result) => {
             dispatch({type: success, payload: result})
         })
     }, [url])

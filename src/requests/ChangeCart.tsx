@@ -1,5 +1,5 @@
 import {useReducer} from "react";
-import {deleteFromBackend, getFromBackend} from "../modules";
+import {deleteFromBackendToken, getFromBackendToken} from "../modules";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const increase = "Increase"
@@ -37,7 +37,7 @@ export function ChangeCart(Store: string) {
     const url3 = `cart/delete/${Store}`
 
     function Incr() {
-        getFromBackend(url1).then(result => {
+        getFromBackendToken(url1).then(result => {
             dispatch({type: increase, payload: result})
         }).catch(() => {
             dispatch({type: failure})
@@ -45,7 +45,7 @@ export function ChangeCart(Store: string) {
     }
 
     function Decr() {
-        getFromBackend(url2).then(result => {
+        getFromBackendToken(url2).then(result => {
             dispatch({type: decrease, payload: result})
         }).catch(() => {
             dispatch({type: failure})
@@ -53,7 +53,7 @@ export function ChangeCart(Store: string) {
     }
 
     function Del() {
-        deleteFromBackend(url3).then(() => {
+        deleteFromBackendToken(url3).then(() => {
             dispatch({type: del})
         }).catch(() => {
             dispatch({type: failure})
