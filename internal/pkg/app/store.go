@@ -72,7 +72,10 @@ func (a *Application) GetStore(gCtx *gin.Context) {
 // @Failure 	 	500 {object} swagger.Error
 // @Router       	/store/{UUID}/{Quantity} [get]
 func (a *Application) GetPromoStore(gCtx *gin.Context) {
-	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
+	StoreUUID, err := uuid.Parse(gCtx.Param("uuid"))
 	quantity, _ := strconv.Atoi(gCtx.Param("quantity"))
 	if err != nil {
 		gCtx.JSON(
@@ -85,7 +88,7 @@ func (a *Application) GetPromoStore(gCtx *gin.Context) {
 		return
 	}
 
-	code, Promo, err := a.repo.GetPromoStore(uint64(quantity), UUID)
+	code, Promo, err := a.repo.GetPromoStore(uint64(quantity), StoreUUID, userUUID)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(

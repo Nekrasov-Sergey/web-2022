@@ -32,15 +32,15 @@ func (r *Repository) GetStores() ([]ds.Store, error) {
 	return stores, err
 }
 
-func (r *Repository) GetStore(uuid uuid.UUID) (ds.Store, error) {
+func (r *Repository) GetStore(UUID uuid.UUID) (ds.Store, error) {
 	var store ds.Store
-	err := r.db.First(&store, uuid).Error
+	err := r.db.First(&store, UUID).Error
 	return store, err
 }
 
-func (r *Repository) GetPromoStore(quantity uint64, uuid uuid.UUID) (int, string, error) {
+func (r *Repository) GetPromoStore(quantity uint64, storeUUID uuid.UUID, userUUID uuid.UUID) (int, string, error) {
 	var store ds.Store
-	err := r.db.First(&store, uuid).Error
+	err := r.db.First(&store, storeUUID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, "", err
@@ -49,14 +49,14 @@ func (r *Repository) GetPromoStore(quantity uint64, uuid uuid.UUID) (int, string
 	}
 
 	var cart ds.Cart
-	err = r.db.First(&cart, uuid).Error
+	err = r.db.First(&cart, storeUUID, userUUID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, "", err
 		}
 		return 500, "", err
 	}
-	err = r.db.Delete(&cart, uuid).Error
+	err = r.db.Delete(&cart, storeUUID, userUUID).Error
 	if err != nil {
 		return 500, "", err
 	}
@@ -75,7 +75,7 @@ func (r *Repository) GetPromoStore(quantity uint64, uuid uuid.UUID) (int, string
 	}
 
 	if store.Quantity == 0 {
-		err = r.db.Delete(&store, uuid).Error
+		err = r.db.Delete(&store, storeUUID).Error
 		if err != nil {
 			return 500, "", err
 		}
@@ -171,21 +171,21 @@ func (r *Repository) DeleteStore(uuid uuid.UUID) (int, error) {
 	return 0, nil
 }
 
-func (r *Repository) GetCart() ([]ds.Cart, error) {
+func (r *Repository) GetCart(userUUID uuid.UUID) ([]ds.Cart, error) {
 	var cart []ds.Cart
-	err := r.db.Order("store").Find(&cart).Error
+	err := r.db.Order("store_uuid").Find(&cart, "user_uuid = ?", userUUID).Error
 	return cart, err
 }
 
-func (r *Repository) GetCart1(store uuid.UUID) (ds.Cart, error) {
+func (r *Repository) GetCart1(storeUUID uuid.UUID, userUUID uuid.UUID) (ds.Cart, error) {
 	var cart ds.Cart
-	err := r.db.First(&cart, store).Error
+	err := r.db.First(&cart, "store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Error
 	return cart, err
 }
 
-func (r *Repository) DeleteCart(store uuid.UUID) (int, error) {
+func (r *Repository) DeleteCart(storeUUID uuid.UUID, userUUID uuid.UUID) (int, error) {
 	var cart ds.Cart
-	err := r.db.First(&cart, store).Error
+	err := r.db.First(&cart, "store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, err
@@ -193,16 +193,16 @@ func (r *Repository) DeleteCart(store uuid.UUID) (int, error) {
 		return 500, err
 	}
 
-	err = r.db.Delete(&cart, store).Error
+	err = r.db.Delete(&cart, "store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Error
 	if err != nil {
 		return 500, err
 	}
 	return 0, nil
 }
 
-func (r *Repository) IncreaseQuantity(store uuid.UUID) (uint64, error) {
-	var st ds.Store
-	err := r.db.First(&st, store).Error
+func (r *Repository) IncreaseQuantity(storeUUID uuid.UUID, userUUID uuid.UUID) (uint64, error) {
+	var store ds.Store
+	err := r.db.First(&store, storeUUID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 404, err
@@ -211,10 +211,11 @@ func (r *Repository) IncreaseQuantity(store uuid.UUID) (uint64, error) {
 	}
 
 	var cart ds.Cart
-	err = r.db.First(&cart, store).Error
+	err = r.db.First(&cart, "store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			cart.Store = store
+			cart.StoreUUID = storeUUID
+			cart.UserUUID = userUUID
 			cart.Quantity = 0
 			err = r.db.Create(cart).Error
 			if err != nil {
@@ -225,8 +226,8 @@ func (r *Repository) IncreaseQuantity(store uuid.UUID) (uint64, error) {
 		}
 	}
 
-	if cart.Quantity < st.Quantity {
-		err = r.db.Model(&cart).Where(cart.Store).Update("Quantity", cart.Quantity+1).Error
+	if cart.Quantity < store.Quantity {
+		err = r.db.Model(&cart).Where("store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Update("Quantity", cart.Quantity+1).Error
 		if err != nil {
 			return 0, err
 		}
@@ -235,9 +236,9 @@ func (r *Repository) IncreaseQuantity(store uuid.UUID) (uint64, error) {
 	return cart.Quantity, nil
 }
 
-func (r *Repository) DecreaseQuantity(store uuid.UUID) (uint64, int, error) {
+func (r *Repository) DecreaseQuantity(storeUUID uuid.UUID, userUUID uuid.UUID) (uint64, int, error) {
 	var cart ds.Cart
-	err := r.db.First(&cart, store).Error
+	err := r.db.First(&cart, "store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return 0, 404, err
@@ -245,12 +246,12 @@ func (r *Repository) DecreaseQuantity(store uuid.UUID) (uint64, int, error) {
 		return 0, 500, err
 	}
 	if cart.Quantity > 0 {
-		err = r.db.Model(&cart).Where(cart.Store).Update("Quantity", cart.Quantity-1).Error
+		err = r.db.Model(&cart).Where("store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Update("Quantity", cart.Quantity-1).Error
 		if err != nil {
 			return 0, 500, err
 		}
 		if cart.Quantity == 0 {
-			err = r.db.Delete(&cart, store).Error
+			err = r.db.Delete(&cart, "store_uuid = ? and user_uuid = ?", storeUUID, userUUID).Error
 			if err != nil {
 				return 0, 500, err
 			}

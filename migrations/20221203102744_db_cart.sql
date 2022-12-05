@@ -2,8 +2,9 @@
 -- +goose StatementBegin
 create table cart
 (
-    store    uuid REFERENCES stores (UUID) ON DELETE CASCADE,
-    quantity int
+    store_uuid uuid REFERENCES stores (uuid) ON DELETE CASCADE,
+    user_uuid  uuid REFERENCES users (uuid) ON DELETE CASCADE,
+    quantity   int
 );
 
 

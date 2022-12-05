@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"main/internal/app/ds"
 	"main/internal/app/role"
@@ -54,7 +53,7 @@ func (a *Application) Login(gCtx *gin.Context) {
 				IssuedAt:  time.Now().Unix(),
 				Issuer:    "bitop-admin",
 			},
-			UserUUID: uuid.New(), // test uuid
+			UserUUID: user.UUID,
 			Role:     user.Role,
 		})
 

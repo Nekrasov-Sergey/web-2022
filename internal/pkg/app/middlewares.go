@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"log"
 	"main/internal/app/ds"
 	"main/internal/app/role"
@@ -63,4 +64,26 @@ func (a *Application) WithAuthCheck(assignedRoles ...role.Role) func(ctx *gin.Co
 
 	}
 
+}
+
+func (a *Application) GetUserByToken(jwtStr string) (userUUID uuid.UUID) {
+	if !strings.HasPrefix(jwtStr, jwtPrefix) { // если нет префикса то нас дурят!
+		return // завершаем обработку
+	}
+	// отрезаем префикс
+	jwtStr = jwtStr[len(jwtPrefix):]
+
+	token, err := jwt.ParseWithClaims(jwtStr, &ds.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(a.config.JWT.Token), nil
+	})
+	if err != nil {
+		log.Println(err)
+
+		return
+	}
+
+	myClaims := token.Claims.(*ds.JWTClaims)
+	log.Println(myClaims)
+
+	return myClaims.UserUUID
 }

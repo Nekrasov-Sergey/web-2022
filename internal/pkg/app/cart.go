@@ -16,7 +16,10 @@ import (
 // @Failure 		500 {object} swagger.Error
 // @Router       	/cart [get]
 func (a *Application) GetCart(gCtx *gin.Context) {
-	resp, err := a.repo.GetCart()
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
+	resp, err := a.repo.GetCart(userUUID)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -42,6 +45,9 @@ func (a *Application) GetCart(gCtx *gin.Context) {
 // @Failure 		500 {object} swagger.Error
 // @Router       	/cart/{Store} [get]
 func (a *Application) GetCart1(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
 	store, err := uuid.Parse(gCtx.Param("store"))
 	if err != nil {
 		gCtx.JSON(
@@ -54,7 +60,7 @@ func (a *Application) GetCart1(gCtx *gin.Context) {
 		return
 	}
 
-	resp, _ := a.repo.GetCart1(store)
+	resp, _ := a.repo.GetCart1(store, userUUID)
 
 	gCtx.JSON(http.StatusOK, resp)
 }
@@ -70,6 +76,9 @@ func (a *Application) GetCart1(gCtx *gin.Context) {
 // @Failure 		500 {object} swagger.Error
 // @Router       	/cart/increase/{Store} [get]
 func (a *Application) IncreaseQuantity(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
 	store, err := uuid.Parse(gCtx.Param("store"))
 	if err != nil {
 		gCtx.JSON(
@@ -82,7 +91,7 @@ func (a *Application) IncreaseQuantity(gCtx *gin.Context) {
 		return
 	}
 
-	quantity, err := a.repo.IncreaseQuantity(store)
+	quantity, err := a.repo.IncreaseQuantity(store, userUUID)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -109,6 +118,9 @@ func (a *Application) IncreaseQuantity(gCtx *gin.Context) {
 // @Failure 		500 {object} swagger.Error
 // @Router       	/cart/decrease/{Store} [get]
 func (a *Application) DecreaseQuantity(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
 	store, err := uuid.Parse(gCtx.Param("store"))
 	if err != nil {
 		gCtx.JSON(
@@ -121,7 +133,7 @@ func (a *Application) DecreaseQuantity(gCtx *gin.Context) {
 		return
 	}
 
-	quantity, code, err := a.repo.DecreaseQuantity(store)
+	quantity, code, err := a.repo.DecreaseQuantity(store, userUUID)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
@@ -159,6 +171,9 @@ func (a *Application) DecreaseQuantity(gCtx *gin.Context) {
 // @Failure 	 	500 {object} swagger.Error
 // @Router       	/cart/delete/{Store} [delete]
 func (a *Application) DeleteCart(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
 	store, err := uuid.Parse(gCtx.Param("store"))
 	if err != nil {
 		gCtx.JSON(
@@ -171,7 +186,7 @@ func (a *Application) DeleteCart(gCtx *gin.Context) {
 		return
 	}
 
-	code, err := a.repo.DeleteCart(store)
+	code, err := a.repo.DeleteCart(store, userUUID)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(
