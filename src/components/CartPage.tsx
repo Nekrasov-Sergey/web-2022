@@ -10,14 +10,14 @@ export function CartPage() {
         <>
             <Navbar/>
             <div className="bg-yellow-50 min-h-screen">
-                <p className="ml-4 text-2xl font-normal text-black">
+                <p className="ml-4 sm:text-2xl text-1xl font-normal text-black">
                     <Link to="/store" className="mr-2">
                         Freebie shop
                     </Link>
                     / cart
                 </p>
 
-                <p className="text-center font-bold text-5xl text-pink-500">
+                <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
                     Корзина
                 </p>
 

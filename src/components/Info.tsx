@@ -7,18 +7,18 @@ export function Info() {
         <>
             <Navbar/>
             <div className="bg-yellow-50 min-h-screen">
-                <p className="ml-4 text-2xl font-normal text-black">
+                <p className="ml-4 sm:text-2xl text-1xl font-normal text-black">
                     <Link to="/store" className="mr-2">
                         Freebie shop
                     </Link>
                     / info
                 </p>
 
-                <p className="text-center font-bold text-5xl text-pink-500">
+                <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
                     Freebie shop
                 </p>
 
-                <p className="text-center mt-4 mx-8 font-medium text-3xl text-indigo-700">
+                <p className="text-center sm:mt-4 mx-8 font-medium mob:font-normal text-3xl mob:text-2xl text-indigo-700">
                     Это магазин промокодов, где вы можете купить промокоды для многих популярных магазинов.
                     Экономьте деньги вместе с нами!
                 </p>

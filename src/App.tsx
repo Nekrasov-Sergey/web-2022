@@ -6,6 +6,7 @@ import {NotFound} from "./components/NotFound";
 import {CartPage} from "./components/CartPage";
 import {Registration} from "./components/RegisterPage";
 import {LoginPage} from "./components/LoginPage";
+import {ProfilePage} from "./components/ProfilePage";
 
 export const ENDPOINT = "http://localhost:8080"
 
@@ -20,6 +21,7 @@ export default function App() {
                 <Route path="*" element={<NotFound/>}/>
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/registration" element={<Registration/>}/>
+                <Route path="/profile/:id" element={<ProfilePage/>}/>
             </Routes>
         </BrowserRouter>
     )

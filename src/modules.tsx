@@ -19,7 +19,6 @@ export function deleteFromBackendToken(url: string) {
         }}).then(r => r.data)
 }
 
-
 export function createUser(url: string, name: string, pass: string) {
     const body = {name: name, pass: pass}
     return axios.post(`${ENDPOINT}/${url}`, body, {withCredentials: true}).then(function (response) {
@@ -40,26 +39,28 @@ export function loginUser(url: string, name: string, pass: string) {
     })
 }
 
-export function logoutUser(url: string) {
-    let access_token = document.cookie.replace("access_token=", "")
-    console.log(access_token)
-    return axios.get(`${ENDPOINT}/${url}`, {
-        withCredentials: true, headers: {
+export function logoutUser (url: string) {
+    let access_token = getToken()
+    return axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
             "Authorization": `Bearer ${access_token}`
-        }
-    }).then(function (r) {
-        console.log(r.data)
-        window.location.replace("/login")
+        }}).then(function () {
+        window.location.replace('/login')
     })
 }
 
 export function getToken() {
     let tokens = document.cookie.split(' ')
     let access_token = ''
-    for (var i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
         if (tokens[i].startsWith("access_token=")) {
             access_token = tokens[i].replace("access_token=", "")
         }
     }
     return access_token.replace(";", "")
+}
+
+export function getRole(token: string) {
+    return axios.get(`${ENDPOINT}/role`, {withCredentials: true, headers: {
+            "Authorization": `Bearer ${token}`
+        }}).then(r => r.data)
 }

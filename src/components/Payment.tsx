@@ -9,7 +9,7 @@ export function Payment() {
         <>
             <Navbar/>
             <div className="bg-yellow-50 min-h-screen">
-                <p className="ml-4 text-2xl font-normal text-black">
+                <p className="ml-4 sm:text-2xl text-1xl font-normal text-black">
                     <Link to="/store" className="mr-2">
                         Freebie shop
                     </Link>
@@ -19,13 +19,13 @@ export function Payment() {
                     / {useLocation().state.Name}
                 </p>
 
-                <p className=" font-bold text-5xl text-pink-500 text-center">
+                <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
                     Страница оплаты
                 </p>
 
-                <p className="mt-8 font-medium text-4xl text-green-500 text-center">
+                <p className="sm:mt-8 font-medium sm:text-4xl text-2xl text-green-500 text-center">
                     Ваши промокоды для магазина "{useLocation().state.Name}":
-                    <p className="font-bold italic text-4xl text-red-700">
+                    <p className="font-bold italic sm:text-4xl text-2xl text-red-700">
                         {GetPromo()}
                     </p>
                 </p>

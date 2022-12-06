@@ -65,7 +65,7 @@ export function ChangeCart(Store: string) {
             <button onClick={() => Decr()}>-</button>
             <button onClick={() => Incr()}>+</button>
             <button onClick={() => Del()}>
-                <DeleteIcon/>
+                    <DeleteIcon fontSize="inherit"/>
             </button>
         </form>
     )

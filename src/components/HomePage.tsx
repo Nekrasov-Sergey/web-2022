@@ -62,17 +62,17 @@ export function HomePage() {
             <Navbar/>
 
             <div className="bg-yellow-50 min-h-screen">
-                <p className="ml-4 text-2xl font-normal text-black">
+                <p className="ml-4 sm:text-2xl text-1xl font-normal text-black">
                     Freebie shop
                 </p>
 
-                <p className="text-center text-5xl font-bold text-pink-500">
-                    Доступные промокоды на Ноябрь 2022
+                <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
+                    Доступные промокоды на Декабрь 2022
                 </p>
 
-                <div className="grid grid-cols-2 mt-5">
-                    <div className="mx-auto">
-                        <Box sx={{width: 400}}>
+                <div className="mt-5 mob:mt-2">
+                    <div className="flex place-content-center">
+                        <Box sx={{width: 300}}>
                             <Slider
                                 aria-label="Price filter"
                                 valueLabelDisplay="auto"
@@ -88,7 +88,7 @@ export function HomePage() {
                         </Box>
                     </div>
 
-                    <div className="mx-auto">
+                    <div className="flex place-content-center">
                         <form>
                             <input
                                 type="text"
