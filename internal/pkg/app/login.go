@@ -186,3 +186,10 @@ func (a *Application) Logout(gCtx *gin.Context) {
 		Status: true,
 	})
 }
+
+func (a *Application) Role(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	roleByToken := a.GetRoleByToken(jwtStr)
+
+	gCtx.JSON(http.StatusOK, roleByToken)
+}

@@ -26,17 +26,11 @@ func (a *Application) StartServer() {
 
 	r.GET("/store/:uuid/:quantity", a.GetPromoStore)
 
-	r.POST("/store", a.CreateStore)
-
 	r.POST("/store/random", a.CreateRandomStores)
 
 	r.PUT("/store/:uuid", a.ChangePriceStore)
 
-	r.DELETE("/store/:uuid", a.DeleteStore)
-
 	// Запросы для корзины:
-	r.GET("/cart", a.GetCart)
-
 	r.GET("/cart/:store", a.GetCart1)
 
 	r.GET("/cart/increase/:store", a.IncreaseQuantity)
@@ -52,7 +46,19 @@ func (a *Application) StartServer() {
 
 	r.GET("/logout", a.Logout)
 
-	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/ping", a.Ping)
+	r.GET("/role", a.Role)
+
+	r.POST("/orders", a.AddOrder)
+
+	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/cart", a.GetCart)
+
+	r.Use(a.WithAuthCheck(role.Manager)).POST("/store", a.CreateStore)
+
+	r.Use(a.WithAuthCheck(role.Manager)).DELETE("/store/:uuid", a.DeleteStore)
+
+	r.Use(a.WithAuthCheck(role.Manager)).GET("/orders", a.GetOrders)
+
+	r.Use(a.WithAuthCheck(role.Manager)).PUT("/orders/:uuid", a.ChangeStatus)
 
 	_ = r.Run()
 

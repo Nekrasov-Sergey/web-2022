@@ -87,3 +87,25 @@ func (a *Application) GetUserByToken(jwtStr string) (userUUID uuid.UUID) {
 
 	return myClaims.UserUUID
 }
+
+func (a *Application) GetRoleByToken(jwtStr string) (role role.Role) {
+	if !strings.HasPrefix(jwtStr, jwtPrefix) { // если нет префикса то нас дурят!
+		return // завершаем обработку
+	}
+	// отрезаем префикс
+	jwtStr = jwtStr[len(jwtPrefix):]
+
+	token, err := jwt.ParseWithClaims(jwtStr, &ds.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(a.config.JWT.Token), nil
+	})
+	if err != nil {
+		log.Println(err)
+
+		return
+	}
+
+	myClaims := token.Claims.(*ds.JWTClaims)
+	log.Println(myClaims)
+
+	return myClaims.Role
+}
