@@ -129,19 +129,14 @@ func (r *Repository) CreateRandomStores() error {
 	return err
 }
 
-func (r *Repository) ChangePriceStore(uuid uuid.UUID, price uint64) (int, error) {
-	var store ds.Store
-	err := r.db.First(&store, uuid).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return 404, err
-		}
-		return 500, err
-	}
-	err = r.db.Model(&store).Update("Price", price).Error
+func (r *Repository) ChangeStore(uuid uuid.UUID, store ds.Store) (int, error) {
+	store.UUID = uuid
+
+	err := r.db.Model(&store).Updates(ds.Store{Name: store.Name, Discount: store.Discount, Price: store.Price, Quantity: store.Quantity, Promo: store.Promo, Image: store.Image}).Error
 	if err != nil {
 		return 500, err
 	}
+
 	return 0, nil
 }
 

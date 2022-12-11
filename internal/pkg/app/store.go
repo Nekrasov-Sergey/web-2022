@@ -7,6 +7,7 @@ import (
 	"main/swagger"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // GetStores 		godoc
@@ -125,8 +126,9 @@ func (a *Application) GetPromoStore(gCtx *gin.Context) {
 // @Failure 		500 {object} swagger.Error
 // @Router  		/store [post]
 func (a *Application) CreateStore(gCtx *gin.Context) {
-	promo := ds.Store{}
-	err := gCtx.BindJSON(&promo)
+	store := ds.Store{}
+
+	err := gCtx.BindJSON(&store)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
@@ -138,7 +140,11 @@ func (a *Application) CreateStore(gCtx *gin.Context) {
 		return
 	}
 
-	err = a.repo.CreateStore(promo)
+	if len(store.Promo) != int(store.Quantity) {
+		store.Promo = strings.Split(store.Promo[0], ",")
+	}
+
+	err = a.repo.CreateStore(store)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -202,7 +208,7 @@ func (a *Application) CreateRandomStores(gCtx *gin.Context) {
 		})
 }
 
-// ChangePriceStore		godoc
+// ChangeStore		godoc
 // @Summary      	Change promo price
 // @Description  	Change the promo price using its uuid
 // @Tags         	Change
@@ -214,7 +220,7 @@ func (a *Application) CreateRandomStores(gCtx *gin.Context) {
 // @Failure 		404 {object} swagger.Error
 // @Failure 	 	500 {object} swagger.Error
 // @Router       	/store/{UUID} [put]
-func (a *Application) ChangePriceStore(gCtx *gin.Context) {
+func (a *Application) ChangeStore(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
@@ -227,8 +233,8 @@ func (a *Application) ChangePriceStore(gCtx *gin.Context) {
 		return
 	}
 
-	promo := ds.Store{}
-	err = gCtx.BindJSON(&promo)
+	store := ds.Store{}
+	err = gCtx.BindJSON(&store)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
@@ -240,7 +246,7 @@ func (a *Application) ChangePriceStore(gCtx *gin.Context) {
 		return
 	}
 
-	code, err := a.repo.ChangePriceStore(UUID, promo.Price)
+	code, err := a.repo.ChangeStore(UUID, store)
 	if err != nil {
 		if code == 404 {
 			gCtx.JSON(

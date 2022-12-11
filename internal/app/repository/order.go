@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"main/internal/app/ds"
+	"net/url"
 	"time"
 )
 
@@ -39,10 +40,42 @@ func (r *Repository) AddOrder(order ds.Order) error {
 	return nil
 }
 
-func (r *Repository) GetOrders() ([]ds.Order, error) {
+func (r *Repository) GetOrders(stDate, endDate, status string) ([]ds.Order, error) {
 	var orders []ds.Order
-	err := r.db.Find(&orders).Error
-	return orders, err
+	var err error
+	st, _ := url.QueryUnescape(status)
+	log.Println(st)
+	if st == "" {
+		if stDate == "" && endDate == "" {
+			err = r.db.Order("date").Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate == "" {
+			err = r.db.Order("date").Where("date > ?", stDate).Find(&orders).Error
+			return orders, err
+		} else if stDate == "" && endDate != "" {
+			err = r.db.Order("date").Where("date < ?", endDate).Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate != "" {
+			err = r.db.Order("date").Where("date > ? and date < ?", stDate, endDate).Find(&orders).Error
+			return orders, err
+		}
+	} else {
+		if stDate == "" && endDate == "" {
+			err = r.db.Order("date").Where("status = ?", st).Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate == "" {
+			err = r.db.Order("date").Where("date > ? and status = ?", stDate, st).Find(&orders).Error
+			return orders, err
+		} else if stDate == "" && endDate != "" {
+			err = r.db.Order("date").Where("date < ? and status = ?", endDate, st).Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate != "" {
+			err = r.db.Order("date").Where("date > ? and date < ? and status = ?", stDate, endDate, st).Find(&orders).Error
+			return orders, err
+		}
+	}
+
+	return orders, nil
 }
 
 func (r *Repository) ChangeStatus(uuid uuid.UUID, status string) (int, error) {
