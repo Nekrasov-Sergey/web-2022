@@ -7,6 +7,7 @@ import {CartPage} from "./components/CartPage";
 import {Registration} from "./components/RegisterPage";
 import {LoginPage} from "./components/LoginPage";
 import {ProfilePage} from "./components/ProfilePage";
+import {AddStore} from "./components/AddStore";
 
 export const ENDPOINT = "http://localhost:8080"
 
@@ -21,7 +22,8 @@ export default function App() {
                 <Route path="*" element={<NotFound/>}/>
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/registration" element={<Registration/>}/>
-                <Route path="/profile/:id" element={<ProfilePage/>}/>
+                <Route path="/add" element={<AddStore/>}/>
+                <Route path="/profile" element={<ProfilePage/>}/>
             </Routes>
         </BrowserRouter>
     )
