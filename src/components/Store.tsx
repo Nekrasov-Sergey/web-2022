@@ -9,7 +9,7 @@ export function Store() {
 
     return (
         <div
-            className="border-2 border-teal-200 mx-auto mt-4 mob:mt-1 w-1/2 mob:w-11/12 h-40 mob:h-28 py-5 px-5 mob:py-2 mob:px-0 rounded-lg grid grid-rows-2 grid-cols-3 bg-white"
+            className="border-2 border-teal-200 mx-auto mt-4 mob:mt-1 w-1/2 mob:w-11/12 h-40 mob:h-24 py-5 px-5 mob:py-2 mob:px-0 rounded-lg grid grid-rows-2 grid-cols-3 bg-white"
         >
             <img src={ctx.Image}
                  className="place-self-center object-contain h-20 w-20 mob:h-12 mob:w-12" alt={ctx.Name}
