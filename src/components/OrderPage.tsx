@@ -57,6 +57,17 @@ export function OrderPage() {
             <Navbar/>
 
             <div className="bg-yellow-50 min-h-screen">
+                <p className="ml-4 sm:text-2xl text-1xl font-normal text-black">
+                    <Link to="/store" className="mr-2">
+                        Freebie shop
+                    </Link>
+                    / order
+                </p>
+
+                <p className="text-center text-5xl mb-1 font-bold text-pink-500">
+                    Заказы
+                </p>
+
                 <div className="w-3/5 mx-auto grid grid-rows-2 grid-cols-3 justify-items-center">
                     <div>
                         <label htmlFor="first-name" className="block text-lg text-center font-medium text-gray-700">

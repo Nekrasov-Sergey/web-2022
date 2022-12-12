@@ -47,7 +47,7 @@ export function AddStore() {
                 </p>
 
                 <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
-                    Добавление нового магазина
+                    Добавление магазина
                 </p>
 
                 <form className="mt-10 mx-5 bg-white rounded-lg border-2 border-teal-200">
