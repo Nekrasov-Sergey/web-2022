@@ -25,7 +25,7 @@ func (r *Repository) AddOrder(userUUID uuid.UUID, storeUUID uuid.UUID, quantity 
 
 	order.Date = time.Now()
 
-	order.Status = "Оформлен"
+	order.Status = "Заказан"
 
 	err = r.db.Create(&order).Error
 	if err != nil {
@@ -40,7 +40,7 @@ func (r *Repository) GetOrders(stDate, endDate, status string) ([]ds.Order, erro
 	var err error
 	st, _ := url.QueryUnescape(status)
 	log.Println(st)
-	if st == "" {
+	if st == "Любой" {
 		if stDate == "" && endDate == "" {
 			err = r.db.Order("date").Find(&orders).Error
 			return orders, err

@@ -246,6 +246,10 @@ func (a *Application) ChangeStore(gCtx *gin.Context) {
 		return
 	}
 
+	if len(store.Promo) != int(store.Quantity) {
+		store.Promo = strings.Split(store.Promo[0], ",")
+	}
+
 	code, err := a.repo.ChangeStore(UUID, store)
 	if err != nil {
 		if code == 404 {
