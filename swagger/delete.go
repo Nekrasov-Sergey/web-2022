@@ -1,5 +1,5 @@
-package promos
+package swagger
 
-type PromoDeleted struct {
+type Delete struct {
 	Success bool `json:"deleted,omitempty"`
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	log "github.com/sirupsen/logrus"
-	"main/internal/app/config"
 	"main/internal/pkg/app"
 	"os"
 )
@@ -21,27 +20,21 @@ import (
 // @BasePath /
 
 func main() {
-	log.Println("app start")
+	log.Println("application start")
 
 	ctx := context.Background()
 
-	_, err := config.NewConfig(ctx) //Config пока не используется
-	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("can't init config")
-		os.Exit(2)
-	}
-
 	application, err := app.New(ctx)
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("can`t create app")
+		log.Printf("can`t create application: %s", err)
 		os.Exit(2)
 	}
 
-	err = application.Run(ctx)
+	err = application.Run()
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("can`t run app")
+		log.Printf("can`t run application: %s", err)
 		os.Exit(2)
 	}
 
-	log.Println("app terminated")
+	log.Println("application terminated")
 }
