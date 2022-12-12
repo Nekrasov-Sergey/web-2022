@@ -43,14 +43,14 @@ export function AddStore() {
                     <Link to="/store" className="mr-2">
                         Freebie shop
                     </Link>
-                    / add
+                    / adding
                 </p>
 
                 <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
                     Добавление нового магазина
                 </p>
 
-                <div className="mt-10 mx-5 bg-white rounded-lg border-2 border-teal-200">
+                <form className="mt-10 mx-5 bg-white rounded-lg border-2 border-teal-200">
                     <div className="grid grid-cols-4 grid-rows-2 gap-10 p-8">
                         <div className="">
                             <label htmlFor="first-name"
@@ -136,10 +136,19 @@ export function AddStore() {
                             />
                         </div>
                     </div>
-                    <div className="px-4 py-3 text-center sm:px-6">
+
+                    <div className="text-center mb-6">
                         {AddingStore(name, discount, price, quantity, promo, image)}
                     </div>
-                </div>
+                </form>
+
+                <p className="my-8 text-center">
+                    <Link to="/store"
+                          className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 rounded-full text-2xl font-bold"
+                    >
+                        Обратно на главную
+                    </Link>
+                </p>
             </div>
         </>
     )

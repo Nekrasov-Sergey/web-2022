@@ -1,27 +1,42 @@
-import {Link} from "react-router-dom";
+import {IOrder} from "../models";
+import React, {createContext} from "react";
+import {OrdersContext} from "../context";
 import {Navbar} from "./Navbar";
-import React from "react";
+import {GetOrders} from "../requests/GetOrders";
+import {Order} from "./Order";
+import {Link} from "react-router-dom";
 
-export function Info() {
+
+export const MyContext = createContext(OrdersContext);
+
+export function OrderPage() {
+    let orders = GetOrders()
+
     return (
         <>
             <Navbar/>
+
             <div className="bg-yellow-50 min-h-screen">
                 <p className="ml-4 sm:text-2xl text-1xl font-normal text-black">
                     <Link to="/store" className="mr-2">
                         Freebie shop
                     </Link>
-                    / info
+                    / orders
                 </p>
 
                 <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
-                    Freebie shop
+                    Заказы
                 </p>
 
-                <p className="text-center sm:mt-4 mx-8 font-medium mob:font-normal text-3xl mob:text-2xl text-indigo-700">
-                    Это магазин промокодов, где вы можете купить промокоды для многих популярных магазинов.
-                    Экономьте деньги вместе с нами!
-                </p>
+                <div className="px-2 sm:px-0 flex flex-col gap-4 mx-auto container">
+                    {orders.map((order: IOrder, key: any) => {
+                        return (
+                            <MyContext.Provider value={order} key={key}>
+                                <Order/>
+                            </MyContext.Provider>
+                        )
+                    })}
+                </div>
 
                 <p className="my-8 text-center">
                     <Link to="/store"
@@ -30,11 +45,7 @@ export function Info() {
                         Обратно на главную
                     </Link>
                 </p>
-
-                <img src="https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/Discount_hgs7rl.png"
-                     width="25%" className="mx-auto" alt="Discount"/>
             </div>
         </>
     )
 }
-

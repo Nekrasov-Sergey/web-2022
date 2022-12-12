@@ -14,6 +14,7 @@ export function ManagerNavbar() {
         {name: 'Корзина', href: '/cart'},
         {name: 'О нас', href: '/info'},
         {name: 'Добавить магазин', href: '/add'},
+        {name: 'Заказы', href: '/orders'},
     ]
 
     return (

@@ -1,4 +1,4 @@
-import {ICart, IStore} from "./models";
+import {ICart, IOrder, IStore} from "./models";
 
 export let StoreContext: IStore = {
     UUID: "",
@@ -13,4 +13,13 @@ export let StoreContext: IStore = {
 export let CartContext: ICart = {
     StoreUUID: "",
     Quantity: 0
+}
+
+export let OrdersContext: IOrder = {
+    UUID: "",
+    Store: "",
+    Quantity: 0,
+    UserUUID: "",
+    Date: "",
+    Status: "",
 }

@@ -62,6 +62,7 @@ export function addStore(url: string, name: string, discount: number, price: num
     })
 }
 
+
 export function createUser(url: string, name: string, pass: string) {
     const body = {name: name, pass: pass}
     return axios.post(`${ENDPOINT}/${url}`, body, {withCredentials: true}).then(function (response) {

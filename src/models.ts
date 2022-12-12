@@ -12,3 +12,12 @@ export interface ICart {
     StoreUUID: string
     Quantity: number
 }
+
+export interface IOrder {
+    UUID: string
+    Store: string
+    Quantity: number
+    UserUUID: string
+    Date: string
+    Status: string
+}
