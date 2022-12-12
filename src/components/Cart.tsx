@@ -34,7 +34,7 @@ export function Cart() {
             </p>
 
             <Link to={`/payment`}
-                  className="border-4 mob:border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-1 px-3 place-self-center rounded-full sm:text-2xl text1xl font-bold"
+                  className="border-4 mob:border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-1 px-3 place-self-center rounded-full sm:text-2xl text-1xl font-bold"
                   state={{Name: Store.Name, Store: ctx.StoreUUID, Quantity: ctx.Quantity}}
             >
                 Купить

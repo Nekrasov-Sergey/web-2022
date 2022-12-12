@@ -9,6 +9,7 @@ import {LoginPage} from "./components/LoginPage";
 import {ProfilePage} from "./components/ProfilePage";
 import {AddStore} from "./components/AddStore";
 import {OrderPage} from "./components/OrderPage";
+import {ChangeStore} from "./components/ChangeStore";
 
 export const ENDPOINT = "http://localhost:8080"
 
@@ -26,6 +27,7 @@ export default function App() {
                 <Route path="/add" element={<AddStore/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>
                 <Route path="/orders" element={<OrderPage/>}></Route>
+                <Route path="/change" element={<ChangeStore/>}/>
             </Routes>
         </BrowserRouter>
     )

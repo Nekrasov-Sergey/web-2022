@@ -1,10 +1,10 @@
-import {useEffect, useReducer} from "react";
-import {getFromBackendToken} from "../modules";
+import {createContext} from "react";
+import {OrderContext} from "../context";
 
-const initialState = {order: []}
+export const ContextOrder = createContext(OrderContext);
 const success = "Success"
 
-function reducer(state: any, action: { type: any; payload: any; }) {
+export function reducer(state: any, action: { type: any; payload: any; }) {
     switch (action.type) {
         case success:
             return {
@@ -13,17 +13,4 @@ function reducer(state: any, action: { type: any; payload: any; }) {
         default:
             return state
     }
-}
-
-export function GetOrders() {
-    const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `orders`
-
-    useEffect(() => {
-        getFromBackendToken(url).then((result) => {
-            dispatch({type: success, payload: result})
-        })
-    }, [url])
-
-    return state.order
 }

@@ -12,10 +12,11 @@ export function getToken() {
     return access_token.replace(";", "")
 }
 
-export function getRole(token: string) {
+export function getRole() {
+    let access_token = getToken()
     return axios.get(`${ENDPOINT}/role`, {
         withCredentials: true, headers: {
-            "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${access_token}`
         }
     }).then(r => r.data)
 }
@@ -62,6 +63,38 @@ export function addStore(url: string, name: string, discount: number, price: num
     })
 }
 
+export function updateStatus(uuid: string, status: string) {
+    const body = { Status: status }
+    let access_token = getToken()
+    return axios.put(`${ENDPOINT}/orders/${uuid}`, body,{withCredentials: true, headers: {
+            "Authorization": `Bearer ${access_token}`
+        }}).then(r => r.data)
+}
+
+export function deleteStore (url: string, uuid: string) {
+    let access_token = getToken()
+    return axios.delete(`${ENDPOINT}/${url}/${uuid}`, {withCredentials: true, headers: {
+            "Authorization": `Bearer ${access_token}`
+        }}).then(r => r.data)
+}
+
+export function changeStore(uuid: string, url: string, name: string, discount: number, price: number, quantity: number, promo: string[], image: string) {
+    const body = {
+        Name: name,
+        Discount: discount,
+        Price: price,
+        Quantity: quantity,
+        Promo: promo,
+        Image: image,
+    }
+    let access_token = getToken()
+    return  axios.put(`${ENDPOINT}/${url}/${uuid}`, body, {withCredentials: true, headers: {
+            "Authorization": `Bearer ${access_token}`
+        }}).then(function (response) {
+        console.log(response);
+    })
+
+}
 
 export function createUser(url: string, name: string, pass: string) {
     const body = {name: name, pass: pass}

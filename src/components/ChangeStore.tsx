@@ -1,35 +1,35 @@
 import React, {useState} from "react"
 import {Navbar} from "./Navbar";
-import {AddingStore} from "../requests/AddStore";
-import {Link} from "react-router-dom";
+import {ChangingStore} from "../requests/ChangeStore";
+import {Link, useLocation} from "react-router-dom";
 
-export function AddStore() {
-    const [name, setName] = useState('Пятёрочка');
+export function ChangeStore() {
+    const [name, setName] = useState(useLocation().state.Name);
     const handleChangeName = (event: { target: { value: any; }; }) => {
         setName(event.target.value);
     };
 
-    const [discount, setDiscount] = useState(400);
+    const [discount, setDiscount] = useState(useLocation().state.Discount);
     const handleChangeDiscount = (event: { target: { value: any; }; }) => {
         setDiscount(Number(event.target.value));
     };
 
-    const [price, setPrice] = useState(200);
+    const [price, setPrice] = useState(useLocation().state.Price);
     const handleChangePrice = (event: { target: { value: any; }; }) => {
         setPrice(Number(event.target.value));
     };
 
-    const [quantity, setQuantity] = useState(3);
+    const [quantity, setQuantity] = useState(useLocation().state.Quantity);
     const handleChangeQuantity = (event: { target: { value: any; }; }) => {
         setQuantity(Number(event.target.value));
     };
 
-    const [promo, setPromo] = useState(["djzML", "MdUI7", "byP1f"]);
+    const [promo, setPromo] = useState(useLocation().state.Promo);
     const handleChangePromo = (event: { target: { value: string; }; }) => {
         setPromo([event.target.value]);
     };
 
-    const [image, setImage] = useState('https://res.cloudinary.com/dh4qv3hob/image/upload/v1667665906/Promos/Five_gioiio.png');
+    const [image, setImage] = useState(useLocation().state.Image);
     const handleChangeImage = (event: { target: { value: any; }; }) => {
         setImage(event.target.value);
     };
@@ -43,14 +43,14 @@ export function AddStore() {
                     <Link to="/store" className="mr-2">
                         Freebie shop
                     </Link>
-                    / adding
+                    / changing
                 </p>
 
                 <p className="text-center sm:text-5xl text-3xl font-bold text-pink-500">
-                    Добавление нового магазина
+                    Изменение магазина
                 </p>
 
-                <form className="mt-10 mx-5 bg-white rounded-lg border-2 border-teal-200">
+                <div className="mt-10 mx-5 bg-white rounded-lg border-2 border-teal-200">
                     <div className="grid grid-cols-4 grid-rows-2 gap-10 p-8">
                         <div className="">
                             <label htmlFor="first-name"
@@ -138,9 +138,9 @@ export function AddStore() {
                     </div>
 
                     <div className="text-center mb-6">
-                        {AddingStore(name, discount, price, quantity, promo, image)}
+                        {ChangingStore(useLocation().state.UUID, name, discount, price, quantity, promo, image)}
                     </div>
-                </form>
+                </div>
 
                 <p className="py-8 text-center">
                     <Link to="/store"

@@ -30,7 +30,7 @@ export function Payment() {
                     </p>
                 </p>
 
-                <p className="my-8 text-center">
+                <p className="py-8 text-center">
                     <Link to="/cart"
                           className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 rounded-full text-2xl font-bold"
                     >

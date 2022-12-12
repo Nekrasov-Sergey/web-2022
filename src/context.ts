@@ -15,7 +15,7 @@ export let CartContext: ICart = {
     Quantity: 0
 }
 
-export let OrdersContext: IOrder = {
+export let OrderContext: IOrder = {
     UUID: "",
     Store: "",
     Quantity: 0,

@@ -8,7 +8,7 @@ import {useState} from "react";
 export function Navbar() {
     let access_token = getToken()
     const [roles, setRole] = useState()
-    let role = getRole(access_token)
+    let role = getRole()
     role.then((result) => {
         setRole(result)
     })
