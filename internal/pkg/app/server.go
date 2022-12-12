@@ -46,9 +46,6 @@ func (a *Application) StartServer() {
 
 	r.GET("/role", a.Role)
 
-	// Запросы для заказов
-	r.POST("/orders", a.AddOrder)
-
 	// Запросы для всех авторизированных пользователей
 	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/cart", a.GetCart)
 

@@ -22,7 +22,7 @@ func (r *Repository) GetStore(UUID uuid.UUID) (ds.Store, error) {
 	return store, err
 }
 
-func (r *Repository) GetStoreName(uuid string) (string, error) {
+func (r *Repository) GetStoreName(uuid uuid.UUID) (string, error) {
 	var store ds.Store
 	err := r.db.Select("name").First(&store, "uuid = ?", uuid).Error
 	return store.Name, err
@@ -47,6 +47,11 @@ func (r *Repository) GetPromoStore(quantity uint64, storeUUID uuid.UUID, userUUI
 		return 500, "", err
 	}
 	err = r.db.Delete(&cart, storeUUID, userUUID).Error
+	if err != nil {
+		return 500, "", err
+	}
+
+	err = r.AddOrder(userUUID, storeUUID, quantity)
 	if err != nil {
 		return 500, "", err
 	}

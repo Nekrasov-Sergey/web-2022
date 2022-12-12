@@ -8,40 +8,40 @@ import (
 	"net/http"
 )
 
-func (a *Application) AddOrder(gCtx *gin.Context) {
-	jwtStr := gCtx.GetHeader("Authorization")
-	userUUID := a.GetUserByToken(jwtStr)
-	order := ds.Order{}
-	order.UserUUID = userUUID
-	err := gCtx.BindJSON(&order)
-	if err != nil {
-		gCtx.JSON(
-			http.StatusBadRequest,
-			&swagger.Error{
-				Description: "Invalid parameters",
-				Error:       swagger.Err400,
-				Type:        swagger.TypeClientReq,
-			})
-		return
-	}
-	err = a.repo.AddOrder(order)
-	if err != nil {
-		gCtx.JSON(
-			http.StatusInternalServerError,
-			&swagger.Error{
-				Description: "Create failed",
-				Error:       swagger.Err500,
-				Type:        swagger.TypeInternalReq,
-			})
-		return
-	}
-	gCtx.JSON(
-		http.StatusOK,
-		&swagger.Create{
-			Success: true,
-		})
-
-}
+//func (a *Application) AddOrder(gCtx *gin.Context) {
+//	jwtStr := gCtx.GetHeader("Authorization")
+//	userUUID := a.GetUserByToken(jwtStr)
+//	order := ds.Order{}
+//	order.UserUUID = userUUID
+//	err := gCtx.BindJSON(&order)
+//	if err != nil {
+//		gCtx.JSON(
+//			http.StatusBadRequest,
+//			&swagger.Error{
+//				Description: "Invalid parameters",
+//				Error:       swagger.Err400,
+//				Type:        swagger.TypeClientReq,
+//			})
+//		return
+//	}
+//	err = a.repo.AddOrder(order)
+//	if err != nil {
+//		gCtx.JSON(
+//			http.StatusInternalServerError,
+//			&swagger.Error{
+//				Description: "Create failed",
+//				Error:       swagger.Err500,
+//				Type:        swagger.TypeInternalReq,
+//			})
+//		return
+//	}
+//	gCtx.JSON(
+//		http.StatusOK,
+//		&swagger.Create{
+//			Success: true,
+//		})
+//
+//}
 
 func (a *Application) GetOrders(gCtx *gin.Context) {
 	stDate := gCtx.Query("start_date")

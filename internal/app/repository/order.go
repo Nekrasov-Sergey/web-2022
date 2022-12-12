@@ -10,33 +10,28 @@ import (
 	"time"
 )
 
-func (r *Repository) AddOrder(order ds.Order) error {
-	var names []string
-	log.Println(order.Stores)
-	for _, val := range order.Stores {
-		name, err := r.GetStoreName(val)
-		if err != nil {
-			return err
-		}
-		names = append(names, name)
-	}
-	log.Println(names)
-
-	order.Stores = names
-	//date := time.Now().Add(time.Hour * 3)
+func (r *Repository) AddOrder(userUUID uuid.UUID, storeUUID uuid.UUID, quantity uint64) error {
 	var err error
-	order.Date = time.Now() //, err = time.Parse("2006-01-02 15:04:05", date.Format("2006-01-02 15:04:05"))
+	var order ds.Order
+
+	order.Store, err = r.GetStoreName(storeUUID)
+	if err != nil {
+		return err
+	}
+
+	order.Quantity = quantity
+
+	order.UserUUID = userUUID
+
+	order.Date = time.Now()
+
 	order.Status = "Оформлен"
-	log.Println(order)
 
 	err = r.db.Create(&order).Error
 	if err != nil {
 		return err
 	}
-	err = r.DeleteByUser(order.UserUUID)
-	if err != nil {
-		return err
-	}
+
 	return nil
 }
 
